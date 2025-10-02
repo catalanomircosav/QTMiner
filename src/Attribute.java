@@ -14,8 +14,9 @@ import java.lang.IllegalArgumentException;
  * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
+ * 
  * @version 1.0
- * @since 0.1
+ * @since 1.0
  */
 public abstract class Attribute {
 
