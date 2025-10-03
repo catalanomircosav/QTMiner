@@ -8,17 +8,14 @@ import java.lang.IllegalArgumentException;
  * Questa classe deve essere estesa per creare attributi specifici (ad esempio discreti o continui).
  * </p>
  * 
- * <p>
- * Gli attributi sono immutabili: il nome e l'indice non possono essere modificati dopo la creazione.
- * </p>
- * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
  * 
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
-public abstract class Attribute {
+public abstract class Attribute
+{
 
     /** Nome dell'attributo, non nullo e non vuoto */
     private final String name;
@@ -35,13 +32,13 @@ public abstract class Attribute {
      * @throws IllegalArgumentException se {@code name} è {@code null} o vuoto
      * @throws IllegalArgumentException se {@code index} è negativo
      */
-    protected Attribute(String name, int index) {
-        if (name == null || name.isEmpty()) {
+    protected Attribute(String name, int index)
+    {
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Nome non valido.");
-        }
-        if (index < 0) {
+    
+        if (index < 0)
             throw new IllegalArgumentException("Indice negativo.");
-        }
 
         this.name = name;
         this.index = index;
@@ -52,7 +49,8 @@ public abstract class Attribute {
      * 
      * @return il nome dell'attributo
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -61,7 +59,8 @@ public abstract class Attribute {
      * 
      * @return l'indice dell'attributo
      */
-    public int getIndex() {
+    public int getIndex()
+    {
         return index;
     }
 
@@ -74,7 +73,8 @@ public abstract class Attribute {
      * @return il nome dell'attributo
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return name;
     }
 }

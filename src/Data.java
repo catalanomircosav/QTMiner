@@ -9,15 +9,10 @@ package src;
  * {@code Humidity}, {@code Wind} e {@code Play Tennis}.
  * </p>
  * 
- * <p>
- * La classe fornisce metodi per ottenere il numero di esempi, il numero di attributi,
- * lo schema degli attributi e i valori dei singoli attributi.
- * </p>
- * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
  * 
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public class Data {
@@ -155,6 +150,14 @@ public class Data {
         }
 
         return sb.toString();
+    }
+
+    Tuple getItemSet(int index) {
+        Tuple tuple = new Tuple(attributeSet.length);
+        for(int i=0; i<attributeSet.length; i++) {
+            tuple.add(new DiscreteItem(attributeSet[i], (String)data[index][i]),i);
+        }
+        return tuple;
     }
 
     /**
