@@ -1,6 +1,10 @@
-package src;
+package mining;
 
 import java.util.Arrays;
+
+import data.Data;
+import data.Tuple;
+
 /**
  * La classe {@code QTMiner} implementa un algoritmo di clustering basato su un approccio di tipo "quasi-topologico".
  * <p>
@@ -103,9 +107,9 @@ public class QTMiner {
                     if(!isClustered[j])
                     {
                         Tuple tuple = data.getItemSet(j);
+                        
                         double distance = centroid.getDistance(tuple);
-                        if(distance <= radius)
-                            candidate.addData(j);
+                        if(distance <= radius) candidate.addData(j);
                     }
                 }
 

@@ -1,4 +1,4 @@
-package src;
+package data;
 /**
  * La classe {@code Data} rappresenta un insieme di esempi con attributi discreti, 
  * strutturati in una matrice bidimensionale. Ogni riga della matrice rappresenta 
@@ -12,10 +12,11 @@ package src;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  * 
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
-public class Data {
+public class Data
+{
 
     /**
      * Matrice contenente i valori degli esempi.
@@ -40,7 +41,8 @@ public class Data {
      * Vengono anche inizializzati i valori della matrice {@code data} e lo schema degli attributi {@code attributeSet}.
      * </p>
      */
-    public Data() {
+    public Data()
+    {
         numberOfExamples = 14;
         attributeSet = new Attribute[5];
 
@@ -50,7 +52,8 @@ public class Data {
         attributeSet[3] = new DiscreteAttribute("Wind", 3, new String[] {"weak", "strong"});
         attributeSet[4] = new DiscreteAttribute("Play Tennis", 4, new String[] {"yes", "no"});
 
-        data = new Object[][] {
+        data = new Object[][]
+        {
             { "sunny", "hot", "high", "weak", "no" },
             { "sunny", "hot", "high", "strong", "no" },
             { "overcast", "hot", "high", "weak", "yes" },
@@ -73,27 +76,21 @@ public class Data {
      * 
      * @return il numero di esempi
      */
-    public int getNumberOfExamples() { 
-        return numberOfExamples; 
-    }
+    public int getNumberOfExamples() { return numberOfExamples; }
 
     /**
      * Restituisce il numero totale di attributi del dataset.
      * 
      * @return il numero di attributi
      */
-    public int getNumberOfAttributes() { 
-        return attributeSet.length; 
-    }
+    public int getNumberOfAttributes() { return attributeSet.length; }
 
     /**
      * Restituisce lo schema degli attributi del dataset.
      * 
      * @return un array contenente gli oggetti {@code Attribute}
      */
-    public Attribute[] getAttributeSchema() { 
-        return attributeSet; 
-    }
+    public Attribute[] getAttributeSchema() { return attributeSet; }
     
     /**
      * Restituisce il valore di un attributo per un dato esempio.
@@ -105,17 +102,14 @@ public class Data {
      * 
      * @throws ArrayIndexOutOfBoundsException se gli indici sono fuori dai limiti
      */
-    public Object getValue(int exampleIndex, int attributeIndex) {
+    public Object getValue(int exampleIndex, int attributeIndex)
+    {
 
         if(exampleIndex < 0 || exampleIndex > 14)
-        {
             throw new ArrayIndexOutOfBoundsException("Indice fuori dai limiti.");
-        }
 
         if(attributeIndex < 0 || attributeIndex > 5)
-        {
             throw new ArrayIndexOutOfBoundsException("Indice fuori dai limiti.");
-        }
 
         return data[exampleIndex][attributeIndex];
     }
@@ -130,21 +124,22 @@ public class Data {
      * @return una stringa contenente l'intero dataset in formato leggibile
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
 
-        for(Attribute attr : attributeSet) {
+        for(Attribute attr : attributeSet)
             sb.append(attr.toString()).append(", ");
-        }
 
         sb.setLength(sb.length() - 2);
         sb.append("\n");
         
-        for(int i = 0; i < numberOfExamples; i++) {
+        for(int i = 0; i < numberOfExamples; i++)
+        {
             sb.append(i + 1).append(": ");
-            for(int j = 0; j < attributeSet.length; j++) {
+            for(int j = 0; j < attributeSet.length; j++)
                 sb.append(data[i][j]).append(", "); 
-            }
+            
             sb.setLength(sb.length() - 2);
             sb.append("\n");
         }
@@ -152,21 +147,19 @@ public class Data {
         return sb.toString();
     }
 
-    Tuple getItemSet(int index) {
-        Tuple tuple = new Tuple(attributeSet.length);
-        for(int i=0; i<attributeSet.length; i++) {
-            tuple.add(new DiscreteItem(attributeSet[i], (String)data[index][i]),i);
-        }
-        return tuple;
-    }
-
     /**
-     * Metodo di test principale. Crea un oggetto {@code Data} e stampa il dataset.
+     * Restituisce l'insieme di attributi (tupla) per l'esempio all'indice specificato.
      * 
-     * @param args argomenti della linea di comando (non usati)
+     * @param index l'indice dell'esempio (riga della matrice)
+     * 
+     * @return la tupla corrispondente all'esempio
      */
-    public static void main(String[] args) {
-        Data data = new Data();
-        System.out.println(data.toString());
+    public Tuple getItemSet(int index)
+    {
+        Tuple tuple = new Tuple(attributeSet.length);
+        for(int i=0; i<attributeSet.length; i++)
+            tuple.add(new DiscreteItem(attributeSet[i], (String)data[index][i]),i);
+
+        return tuple;
     }
 }

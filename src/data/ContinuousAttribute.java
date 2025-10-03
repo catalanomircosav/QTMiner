@@ -1,4 +1,4 @@
-package src;
+package data;
 /**
  * Rappresenta un attributo continuo di un dataset.
  * <p>
@@ -15,7 +15,8 @@ package src;
  * @version 1.0
  * @since 1.0
  */
-public class ContinuousAttribute extends Attribute{
+public class ContinuousAttribute extends Attribute
+{
 
     /** Valore massimo dell'intervallo dei valori dell'attributo */
     private double min;
@@ -32,14 +33,15 @@ public class ContinuousAttribute extends Attribute{
      * 
      * @throws IllegalArgumentException se min >= max
      */
-    public ContinuousAttribute(String name, int index, double min, double max) {
+    public ContinuousAttribute(String name, int index, double min, double max)
+    {
         // Chiamata al costruttore della superclasse
         super(name, index);
 
         // Controllo che min sia minore di max
-        if(min >= max){
+        if(min >= max)
             throw new IllegalArgumentException("Min must be less than max");
-        }
+        
         this.min = min;
         this.max = max;
     }
@@ -52,11 +54,12 @@ public class ContinuousAttribute extends Attribute{
      * 
      * @throws IllegalArgumentException se value non è nell'intervallo [min, max]
      */
-    public double getScaledValue(double value){
+    public double getScaledValue(double value)
+    {
         // Controllo che il valore sia nell'intervallo [min, max]
-        if(value < min || value > max){
+        if(value < min || value > max)
             throw new IllegalArgumentException("Value out of range");
-        }
+        
         return (value - min) / (max - min);
     }
 }

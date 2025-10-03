@@ -1,4 +1,4 @@
-package src;
+package data;
 /**
  * Rappresenta un attributo discreto di un dataset.
  * <p>
@@ -20,7 +20,8 @@ package src;
  * @version 1.0
  * @since 1.0
  */
-public class DiscreteAttribute extends Attribute {
+public class DiscreteAttribute extends Attribute
+{
 
     /** Array contenente tutti i valori possibili dell'attributo */
     private String[] values;
@@ -34,13 +35,13 @@ public class DiscreteAttribute extends Attribute {
      * 
      * @throws IllegalArgumentException se {@code values} è {@code null} o vuoto
      */
-    public DiscreteAttribute(String name, int index, String[] values) {
+    public DiscreteAttribute(String name, int index, String[] values)
+    {
         super(name, index);
 
-        if (values == null || values.length == 0) {
+        if (values == null || values.length == 0)
             throw new IllegalArgumentException("Valori non validi.");
-        }
-
+        
         this.values = values;
     }
 
@@ -51,9 +52,7 @@ public class DiscreteAttribute extends Attribute {
      * @return il valore dell'attributo corrispondente all'indice
      * @throws ArrayIndexOutOfBoundsException se l'indice non è valido
      */
-    public String getValue(int i) {
-        return values[i];
-    }
+    public String getValue(int i) { return values[i]; }
 
     /**
      * Restituisce il numero di valori distinti che l'attributo può assumere.

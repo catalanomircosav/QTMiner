@@ -1,4 +1,4 @@
-package src;
+package data;
 
 /**
  * La classe {@code DiscreteItem} rappresenta un elemento di un attributo discreto in un dataset.
@@ -30,6 +30,7 @@ public class DiscreteItem extends Item
     {
         if (!(attribute instanceof DiscreteAttribute))
             throw new IllegalArgumentException("L'attributo deve essere di tipo DiscreteAttribute.");
+
         super(attribute, value);
     }
 
@@ -53,6 +54,7 @@ public class DiscreteItem extends Item
     {
         if (a == null) 
             throw new IllegalArgumentException("Il valore specificato non può essere null.");
+            
         if (getValue() == null)
             throw new IllegalArgumentException("Il valore dell'item non può essere null.");
 

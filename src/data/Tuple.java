@@ -1,4 +1,4 @@
-package src;
+package data;
 
 /**
  * La classe {@code Tuple} rappresenta una tupla di item in un dataset.

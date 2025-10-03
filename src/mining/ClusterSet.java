@@ -1,4 +1,6 @@
-package src;
+package mining;
+
+import data.Data;
 
 /**
  * Collezione di {@link Cluster} gestita come array ridimensionato manualmente.
@@ -84,7 +86,10 @@ public class ClusterSet
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < C.length; i++)
             if (C[i] != null)
-                sb.append(i).append(": ").append(C[i].toString(data)).append("\n");
+                if(C.length == 1)
+                    sb.append(C[i].toString(data)).append("\n");
+                else
+                    sb.append(i).append(": ").append(C[i].toString(data)).append("\n");
         
         return sb.toString();
     }

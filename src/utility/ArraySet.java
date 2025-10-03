@@ -1,4 +1,4 @@
-package src;
+package utility;
 
 import java.util.Arrays;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  * 
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 public class ArraySet
@@ -64,7 +64,7 @@ public class ArraySet
 	 * @param i l'intero da rimuovere dall'insieme
 	 * @return {@code true} se l'elemento è stato rimosso (era presente), {@code false} altrimenti
 	 */
-	boolean delete(int i)
+	public boolean delete(int i)
 	{
 		if(i < size)
 		{
@@ -106,7 +106,7 @@ public class ArraySet
 	 * 
 	 * @return la cardinalità dell'insieme
 	 */
-	int[] toArray()
+	public int[] toArray()
 	{
 		int a[] = new int[0];
 		for(int i = 0;i < size; i++)

@@ -1,13 +1,19 @@
-package src;
+package data;
 
 /**
  * Classe astratta che rappresenta un item, ossia una coppia formata da un 
  * {@link Attribute} (attributo) e da un valore osservato per quell'attributo.
  * <p>
  * Ogni sottoclasse di {@code Item} implementa un diverso tipo di calcolo della
- * distanza tra valori, a seconda della natura dell'attributo (ad esempio discreto
- * o continuo).
+ * distanza tra valori, a seconda della natura dell'attributo (ad esempio
+ * discreto o continuo).
  * </p>
+ * 
+ * @author Lorenzo Amato
+ * @author Mirco Catalano
+ * 
+ * @version 1.1
+ * @since 2.0
  */
 public abstract class Item {
     /** Attributo a cui l'item si riferisce */
@@ -22,7 +28,8 @@ public abstract class Item {
      * @param attribute l'attributo a cui l'item si riferisce
      * @param value il valore dell'item, coerente con il dominio dell'attributo
      */
-    public Item(Attribute attribute, Object value) {
+    public Item(Attribute attribute, Object value)
+    {
         this.attribute = attribute;
         this.value = value;
     }
@@ -32,18 +39,14 @@ public abstract class Item {
      *
      * @return l'attributo associato all'item
      */
-    public Attribute getAttribute() {
-        return attribute;
-    }
+    public Attribute getAttribute() { return attribute; }
 
     /**
      * Restituisce il valore dell'item.
      *
      * @return il valore osservato per l'attributo
      */
-    public Object getValue() {
-        return value;
-    }
+    public Object getValue(){ return value; }
 
     /**
      * Restituisce una rappresentazione testuale dell'item nella forma:
@@ -52,11 +55,12 @@ public abstract class Item {
      * @return stringa descrittiva dell'item
      */
     @Override
-    public String toString() {
-        return "Item{" +
-                "attribute=" + attribute +
-                ", value=" + value +
-                '}';
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Item { attribute = ").append(attribute).append(", value = ").append(value).append(" } ");
+
+        return sb.toString();
     }
 
     /**

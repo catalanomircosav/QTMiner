@@ -1,4 +1,8 @@
-package src;
+package mining;
+
+import data.Data;
+import data.Tuple;
+import utility.ArraySet;
 
 /**
  * Rappresenta un cluster in un algoritmo di clustering.
@@ -84,31 +88,40 @@ class Cluster
      * @param data il dataset di riferimento
      * @return stringa descrittiva del cluster
      */
-    public String toString(Data data)
-    {
+    public String toString(Data data) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Centroid = (");
+        int[] array = clusteredData.toArray();
 
-		for(int i = 0; i < centroid.getLength(); i++)
-			sb.append(centroid.get(i).getValue()).append(" ");
-        
-        sb.setLength(sb.length() - 1); // rimuove l'ultimo spazio
+        if (array.length == data.getNumberOfExamples())
+        {
+            sb.append(array.length).append(" tuples in one cluster!");
+            return sb.toString();
+        }
+
+        // Caso normale
+        sb.append("Centroid = (");
+        for (int i = 0; i < centroid.getLength(); i++)
+            sb.append(centroid.get(i).getValue()).append(" ");
+    
+        sb.setLength(sb.length() - 1);
         sb.append(")\nExamples:\n");
 
-		int[] array = clusteredData.toArray();
-
-		for(int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++)
         {
             sb.append("[");
-			for(int j=0;j<data.getNumberOfAttributes();j++)
+            for (int j = 0; j < data.getNumberOfAttributes(); j++)
                 sb.append(data.getValue(array[i], j)).append(" ");
 
             sb.setLength(sb.length() - 1); // rimuove l'ultimo spazio
-            sb.append("] dist = ").append(getCentroid().getDistance(data.getItemSet(array[i]))).append("\n");			
-		}
-        sb.append("\nAvgDistance=").append(getCentroid().avgDistance(data, array)).append("\n");
-        sb.setLength(sb.length() - 1); // rimuove l'ultimo a capo
-        
-		return sb.toString();
-	}
+            sb.append("] dist = ")
+            .append(getCentroid().getDistance(data.getItemSet(array[i])))
+            .append("\n");
+        }
+
+        sb.append("\nAvgDistance=")
+        .append(getCentroid().avgDistance(data, array));
+
+        return sb.toString();
+    }
+
 }
