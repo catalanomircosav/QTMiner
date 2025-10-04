@@ -1,5 +1,8 @@
 package data;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import exceptions.EmptyDatasetException;
 
 /**
@@ -35,7 +38,7 @@ public class Data
     /**
      * Array contenente lo schema degli attributi del dataset.
      */
-    private Attribute[] attributeSet;
+    private List<Attribute> attributeSet = new LinkedList<>();
 
     /**
      * Costruttore della classe {@code Data}.
@@ -47,13 +50,13 @@ public class Data
     public Data() throws EmptyDatasetException
     {
         numberOfExamples = 14;
-        attributeSet = new Attribute[5];
 
-        attributeSet[0] = new DiscreteAttribute("Outlook", 0, new String[] {"overcast", "rain", "sunny"});
-        attributeSet[1] = new DiscreteAttribute("Temperature", 1, new String[] {"hot", "mild", "cool"});
-        attributeSet[2] = new DiscreteAttribute("Humidity", 2, new String[] {"high", "normal"});
-        attributeSet[3] = new DiscreteAttribute("Wind", 3, new String[] {"weak", "strong"});
-        attributeSet[4] = new DiscreteAttribute("Play Tennis", 4, new String[] {"yes", "no"});
+        // Popola lo schema con una List<Attribute>
+        attributeSet.add(new DiscreteAttribute("Outlook",     0, new String[] { "overcast", "rain", "sunny" }));
+        attributeSet.add(new DiscreteAttribute("Temperature", 1, new String[] { "hot", "mild", "cool" }));
+        attributeSet.add(new DiscreteAttribute("Humidity",    2, new String[] { "high", "normal" }));
+        attributeSet.add(new DiscreteAttribute("Wind",        3, new String[] { "weak", "strong" }));
+        attributeSet.add(new DiscreteAttribute("Play Tennis", 4, new String[] { "yes", "no" }));
 
         data = new Object[][]
         {
@@ -89,14 +92,14 @@ public class Data
      * 
      * @return il numero di attributi
      */
-    public int getNumberOfAttributes() { return attributeSet.length; }
+    public int getNumberOfAttributes() { return attributeSet.size(); }
 
     /**
      * Restituisce lo schema degli attributi del dataset.
      * 
      * @return un array contenente gli oggetti {@code Attribute}
      */
-    public Attribute[] getAttributeSchema() { return attributeSet; }
+    public Attribute[] getAttributeSchema() { return attributeSet.toArray(new Attribute[0]); }
     
     /**
      * Restituisce il valore di un attributo per un dato esempio.
@@ -143,7 +146,7 @@ public class Data
         for(int i = 0; i < numberOfExamples; i++)
         {
             sb.append(i + 1).append(": ");
-            for(int j = 0; j < attributeSet.length; j++)
+            for(int j = 0; j < attributeSet.size(); j++)
                 sb.append(data[i][j]).append(", "); 
             
             sb.setLength(sb.length() - 2);
@@ -162,9 +165,9 @@ public class Data
      */
     public Tuple getItemSet(int index)
     {
-        Tuple tuple = new Tuple(attributeSet.length);
-        for(int i=0; i<attributeSet.length; i++)
-            tuple.add(new DiscreteItem(attributeSet[i], (String)data[index][i]),i);
+        Tuple tuple = new Tuple(attributeSet.size());
+        for(int i=0; i<attributeSet.size(); i++)
+            tuple.add(new DiscreteItem(attributeSet.get(i), (String)data[index][i]),i);
 
         return tuple;
     }

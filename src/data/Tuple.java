@@ -1,5 +1,7 @@
 package data;
 
+import java.util.Set;
+
 /**
  * La classe {@code Tuple} rappresenta una tupla di item in un dataset.
  * <p>
@@ -103,15 +105,15 @@ public class Tuple {
      * 
      * @return la distanza media tra la tupla corrente e le tuple specificate
      */
-    public double avgDistance(Data data, int[] clusteredData)
+    public double avgDistance(Data data, Set clusteredData)
     {  
-        if(clusteredData == null || clusteredData.length == 0)
+        if(clusteredData == null || clusteredData.size() == 0)
             throw new IllegalArgumentException("clusteredData non può essere null o vuoto.");
 
         double sumD = 0.0;
-        for(int i = 0; i < clusteredData.length; i++)
-            sumD += getDistance(data.getItemSet(clusteredData[i]));
+        for(Object idx : clusteredData)
+            sumD += getDistance(data.getItemSet((Integer)idx));
 
-        return (sumD / clusteredData.length);
+        return (sumD / clusteredData.size());
     }
 }

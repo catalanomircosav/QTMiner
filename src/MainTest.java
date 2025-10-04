@@ -29,8 +29,8 @@ public class MainTest {
 				try 
 				{
 					int numIter = qt.compute(data);
-					if(numIter > 1)
-					System.out.println("Number of clusters: " + numIter);
+					
+					System.out.println("\nNumber of clusters: " + numIter + "\n");
 					
 					System.out.println(qt.getC().toString(data));
 				}

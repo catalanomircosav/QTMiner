@@ -1,8 +1,10 @@
 package mining;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import data.Data;
 import data.Tuple;
-import utility.ArraySet;
 
 /**
  * Rappresenta un cluster in un algoritmo di clustering.
@@ -18,9 +20,8 @@ import utility.ArraySet;
  * @version 1.0
  * @since 2.0
  */
-class Cluster
+class Cluster implements Iterable<Integer>, Comparable<Cluster>
 {
-
     /** Centroide del cluster. */
     private Tuple centroid;
 
@@ -28,7 +29,7 @@ class Cluster
      * Insieme degli identificativi (tipicamente indici di riga) delle
      * tuple assegnate a questo cluster.
      */
-    private ArraySet clusteredData;
+    private HashSet<Integer> clusteredData;
 
     /**
      * Crea un cluster inizializzandolo con il centroide specificato e
@@ -39,7 +40,7 @@ class Cluster
     Cluster(Tuple centroid)
     {
         this.centroid = centroid;
-        clusteredData = new ArraySet();
+        clusteredData = new HashSet<Integer>();
     }
 
     /**
@@ -66,7 +67,7 @@ class Cluster
      * @return {@code true} se la tupla è contenuta nell'insieme del cluster,
      *         {@code false} altrimenti
      */
-    boolean contain(int id) { return clusteredData.get(id); }
+    boolean contain(int id) { return clusteredData.contains(id); }
 
     /**
      * Rimuove la tupla (identificata da {@code id}) dal cluster,
@@ -74,12 +75,14 @@ class Cluster
      *
      * @param id l'identificativo (indice) della tupla da rimuovere
      */
-    void removeTuple(int id) { clusteredData.delete(id); }
+    void removeTuple(int id) { clusteredData.remove(id); }
     
     public int getSize() { return clusteredData.size(); }
-	
-	
-	public int[] iterator() { return clusteredData.toArray(); }
+
+    @Override
+    public java.util.Iterator<Integer> iterator() {
+        return clusteredData.iterator();
+    }
 
     /**
      * Restituisce una rappresentazione testuale del cluster
@@ -90,32 +93,37 @@ class Cluster
      */
     public String toString(Data data) {
         StringBuilder sb = new StringBuilder();
-        int[] array = clusteredData.toArray();
-
-        // Caso normale
+        Set<Integer> array = clusteredData;
+        
         sb.append("Centroid = (");
         for (int i = 0; i < centroid.getLength(); i++)
             sb.append(centroid.get(i).getValue()).append(" ");
-    
-        sb.setLength(sb.length() - 1);
-        sb.append(")\nExamples:\n");
 
-        for (int i = 0; i < array.length; i++)
+        sb.setLength(sb.length() - 1); 
+
+        sb.append(")\nExamples:\n");
+        for (Integer idx : array)
         {
             sb.append("[");
             for (int j = 0; j < data.getNumberOfAttributes(); j++)
-                sb.append(data.getValue(array[i], j)).append(" ");
+                sb.append(data.getValue(idx, j)).append(" ");
 
-            sb.setLength(sb.length() - 1); // rimuove l'ultimo spazio
+            sb.setLength(sb.length() - 1);
+
             sb.append("] dist = ")
-            .append(getCentroid().getDistance(data.getItemSet(array[i])))
+            .append(getCentroid().getDistance(data.getItemSet(idx)))
             .append("\n");
         }
 
-        sb.append("\nAvgDistance=")
-        .append(getCentroid().avgDistance(data, array));
+        sb.append("AvgDistance=")
+        .append(getCentroid().avgDistance(data, array)).append("\n");
 
         return sb.toString();
     }
 
+    @Override
+    public int compareTo(Cluster other) {
+        return Integer.compare(this.getSize(), other.getSize());
+    
+    }
 }
