@@ -1,4 +1,7 @@
 package data;
+
+import exceptions.EmptyDatasetException;
+
 /**
  * La classe {@code Data} rappresenta un insieme di esempi con attributi discreti, 
  * strutturati in una matrice bidimensionale. Ogni riga della matrice rappresenta 
@@ -41,7 +44,7 @@ public class Data
      * Vengono anche inizializzati i valori della matrice {@code data} e lo schema degli attributi {@code attributeSet}.
      * </p>
      */
-    public Data()
+    public Data() throws EmptyDatasetException
     {
         numberOfExamples = 14;
         attributeSet = new Attribute[5];
@@ -69,6 +72,9 @@ public class Data
             { "overcast", "hot", "normal", "weak", "yes" },
             { "rain", "mild", "high", "strong", "no" }
         };
+
+        if (data.length == 0)
+            throw new EmptyDatasetException();
     }
 
     /**

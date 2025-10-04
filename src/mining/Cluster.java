@@ -92,12 +92,6 @@ class Cluster
         StringBuilder sb = new StringBuilder();
         int[] array = clusteredData.toArray();
 
-        if (array.length == data.getNumberOfExamples())
-        {
-            sb.append(array.length).append(" tuples in one cluster!");
-            return sb.toString();
-        }
-
         // Caso normale
         sb.append("Centroid = (");
         for (int i = 0; i < centroid.getLength(); i++)

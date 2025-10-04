@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import data.Data;
 import data.Tuple;
+import exceptions.ClusteringRadiusException;
 
 /**
  * La classe {@code QTMiner} implementa un algoritmo di clustering basato su un approccio di tipo "quasi-topologico".
@@ -56,7 +57,7 @@ public class QTMiner {
      * @param data il dataset su cui eseguire il clustering
      * @return il numero di cluster generati
      */
-    public int compute(Data data) 
+    public int compute(Data data) throws ClusteringRadiusException
     {
         int numclusters = 0;   
 
@@ -78,6 +79,9 @@ public class QTMiner {
             countClustered += c.getSize();
         }
 
+        if(numclusters == 1)
+            throw new ClusteringRadiusException();
+            
         return numclusters;
     }
 
