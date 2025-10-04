@@ -47,7 +47,8 @@ public class DiscreteAttribute extends Attribute implements Iterable<String>
         if (values == null || values.length == 0)
             throw new IllegalArgumentException("Valori non validi.");
         
-        this.values = new TreeSet<>();
+        this.values = new TreeSet<String>();
+        for(String v : values) this.values.add(v);
     }
 
     /**
@@ -55,11 +56,13 @@ public class DiscreteAttribute extends Attribute implements Iterable<String>
      * 
      * @return numero di valori distinti disponibili
      */
-    public int getNumberOfDistinctValues() {
+    public int getNumberOfDistinctValues()
+    {
         return values.size();
     }
 
-    public Iterator <String> iterator() {
+    public Iterator <String> iterator()
+    {
         return values.iterator();
     }
 }

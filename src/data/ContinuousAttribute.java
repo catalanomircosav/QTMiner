@@ -16,6 +16,7 @@ package data;
  * @since 1.0
  */
 public class ContinuousAttribute extends Attribute
+    // Nessuna collezione, generics non necessari qui
 {
 
     /** Valore massimo dell'intervallo dei valori dell'attributo */

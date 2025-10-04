@@ -38,7 +38,7 @@ public class Data
     /**
      * Array contenente lo schema degli attributi del dataset.
      */
-    private List<Attribute> attributeSet = new LinkedList<>();
+    private List<Attribute> attributeSet = new LinkedList<Attribute>();
 
     /**
      * Costruttore della classe {@code Data}.
@@ -53,33 +53,32 @@ public class Data
 
         // Popola lo schema con una List<Attribute>
         attributeSet.add(new DiscreteAttribute("Outlook",     0, new String[] { "overcast", "rain", "sunny" }));
-        attributeSet.add(new DiscreteAttribute("Temperature", 1, new String[] { "hot", "mild", "cool" }));
+        attributeSet.add(new ContinuousAttribute("Temperature",1, 0.0, 38.7));
         attributeSet.add(new DiscreteAttribute("Humidity",    2, new String[] { "high", "normal" }));
         attributeSet.add(new DiscreteAttribute("Wind",        3, new String[] { "weak", "strong" }));
         attributeSet.add(new DiscreteAttribute("Play Tennis", 4, new String[] { "yes", "no" }));
 
         data = new Object[][]
         {
-            { "sunny", "hot", "high", "weak", "no" },
-            { "sunny", "hot", "high", "strong", "no" },
-            { "overcast", "hot", "high", "weak", "yes" },
-            { "rain", "mild", "high", "weak", "yes" },
-            { "rain", "cool", "normal", "weak", "yes" },
-            { "rain", "cool", "normal", "strong", "no" },
-            { "overcast", "cool", "normal", "strong", "yes" },
-            { "sunny", "mild", "high", "weak", "no" },
-            { "sunny", "cool", "normal", "weak", "yes" },
-            { "rain", "mild", "normal", "weak", "yes" },
-            { "sunny", "mild", "normal", "strong", "yes" },
-            { "overcast", "mild", "high", "strong", "yes" },
-            { "overcast", "hot", "normal", "weak", "yes" },
-            { "rain", "mild", "high", "strong", "no" }
+            { "sunny", 30.3, "high", "weak", "no" },
+            { "sunny", 30.3, "high", "strong", "no" },
+            { "overcast", 30, "high", "weak", "yes" },
+            { "rain", 13, "high", "weak", "yes" },
+            { "rain", 0.0, "normal", "weak", "yes" },
+            { "rain", 0.0, "normal", "strong", "no" },
+            { "overcast", 0.1, "normal", "strong", "yes" },
+            { "sunny", 13.0, "high", "weak", "no" },
+            { "sunny", 0.1, "normal", "weak", "yes" },
+            { "rain", 12.0, "normal", "weak", "yes" },
+            { "sunny", 12.5, "normal", "strong", "yes" },
+            { "overcast", 12.5, "high", "strong", "yes" },
+            { "overcast", 29.21, "normal", "weak", "yes" },
+            { "rain", 12.5, "high", "strong", "no" }
         };
 
         if (data.length == 0)
             throw new EmptyDatasetException();
     }
-
     /**
      * Restituisce il numero totale di esempi presenti nel dataset.
      * 
@@ -145,7 +144,7 @@ public class Data
         
         for(int i = 0; i < numberOfExamples; i++)
         {
-            sb.append(i + 1).append(": ");
+            sb.append(i).append(": ");
             for(int j = 0; j < attributeSet.size(); j++)
                 sb.append(data[i][j]).append(", "); 
             
@@ -163,12 +162,18 @@ public class Data
      * 
      * @return la tupla corrispondente all'esempio
      */
-    public Tuple getItemSet(int index)
-    {
+    public Tuple getItemSet(int index) {
         Tuple tuple = new Tuple(attributeSet.size());
-        for(int i=0; i<attributeSet.size(); i++)
-            tuple.add(new DiscreteItem(attributeSet.get(i), (String)data[index][i]),i);
+        for (int i = 0; i < attributeSet.size(); i++)
+        {
+            Attribute a = attributeSet.get(i);
+            Object v = data[index][i];
 
+            if (a instanceof ContinuousAttribute)
+                tuple.add(new ContinuousItem(a, ((Number) v).doubleValue()), i);
+            else
+                tuple.add(new DiscreteItem(a, (String) v), i);
+        }
         return tuple;
     }
 }

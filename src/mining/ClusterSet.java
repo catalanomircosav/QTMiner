@@ -8,19 +8,10 @@ import java.util.*;
  * <p>
  * Un {@code ClusterSet} rappresenta un insieme di cluster senza duplicati
  * e con un ordine di iterazione determinato dalla struttura dati interna.
- * <p>
- * Fornisce operazioni essenziali per:
- * <ul>
- *   <li>{@link #add(Cluster)} – inserisce un cluster nell’insieme;</li>
- *   <li>{@link #iterator()} – restituisce un iteratore sui cluster;</li>
- *   <li>{@link #toString()} – rappresentazione sintetica dell’insieme;</li>
- *   <li>{@link #toString(Data)} – rappresentazione dettagliata rispetto a un {@link Data}.</li>
- * </ul>
- * <p>
+ * </p>
  * L’ordine di iterazione dei cluster è definito dal {@code TreeSet} e non
  * rappresenta posizioni indicizzate. L’inserimento di un cluster duplicato
  * (non univoco secondo la relazione d’ordine del {@code TreeSet}) non ha effetto.
- * </p>
  */
 public class ClusterSet implements Iterable<Cluster>
 {
@@ -28,7 +19,7 @@ public class ClusterSet implements Iterable<Cluster>
      * Insieme dei cluster. L’ordine di iterazione corrisponde a quello
      * definito dal {@link TreeSet} e non rappresenta posizioni indicizzate.
      */
-    private Set<Cluster> C = new TreeSet<>();
+    private Set<Cluster> C = new TreeSet<Cluster>();
 
     /** Crea un {@code ClusterSet} vuoto. */
     public ClusterSet() { }
@@ -59,7 +50,7 @@ public class ClusterSet implements Iterable<Cluster>
      */
     @Override
     public Iterator<Cluster> iterator() {
-        return C.iterator();
+    return C.iterator();
     }
 
     /**

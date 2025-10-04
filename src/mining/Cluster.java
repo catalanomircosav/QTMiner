@@ -81,7 +81,7 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>
 
     @Override
     public java.util.Iterator<Integer> iterator() {
-        return clusteredData.iterator();
+    return clusteredData.iterator();
     }
 
     /**
@@ -99,8 +99,7 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>
         for (int i = 0; i < centroid.getLength(); i++)
             sb.append(centroid.get(i).getValue()).append(" ");
 
-        sb.setLength(sb.length() - 1); 
-
+        sb.setLength(sb.length() - 1);
         sb.append(")\nExamples:\n");
         for (Integer idx : array)
         {

@@ -105,14 +105,14 @@ public class Tuple {
      * 
      * @return la distanza media tra la tupla corrente e le tuple specificate
      */
-    public double avgDistance(Data data, Set clusteredData)
+    public double avgDistance(Data data, Set<Integer> clusteredData)
     {  
         if(clusteredData == null || clusteredData.size() == 0)
             throw new IllegalArgumentException("clusteredData non può essere null o vuoto.");
 
         double sumD = 0.0;
-        for(Object idx : clusteredData)
-            sumD += getDistance(data.getItemSet((Integer)idx));
+        for(Integer idx : clusteredData)
+            sumD += getDistance(data.getItemSet(idx));
 
         return (sumD / clusteredData.size());
     }

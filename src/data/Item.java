@@ -16,6 +16,7 @@ package data;
  * @since 2.0
  */
 public abstract class Item {
+    // Nessuna collezione, generics non necessari qui
     /** Attributo a cui l'item si riferisce */
     Attribute attribute;
 
