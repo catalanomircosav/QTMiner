@@ -46,6 +46,8 @@ public class Data
      * Inizializza il dataset con 14 esempi e 5 attributi discreti del dataset "Play Tennis". 
      * Vengono anche inizializzati i valori della matrice {@code data} e lo schema degli attributi {@code attributeSet}.
      * </p>
+     * 
+     * @throws EmptyDatasetException se il dataset è vuoto
      */
     public Data() throws EmptyDatasetException
     {

@@ -23,14 +23,9 @@ public class DiscreteItem extends Item
      * 
      * @param attribute l'attributo discreto a cui l'item si riferisce
      * @param value     il valore discreto dell'item
-     * 
-     * @throws IllegalArgumentException se l'attributo non è di tipo {@code DiscreteAttribute}
      */
     public DiscreteItem(Attribute attribute, Object value)
     {
-        if (!(attribute instanceof DiscreteAttribute))
-            throw new IllegalArgumentException("L'attributo deve essere di tipo DiscreteAttribute.");
-
         super(attribute, value);
     }
 

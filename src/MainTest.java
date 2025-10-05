@@ -4,9 +4,32 @@ import exceptions.EmptyDatasetException;
 import keyboardinput.Keyboard;
 import mining.QTMiner;
 
+/**
+ * Classe di test per l'algoritmo di clustering {@code QTMiner}.
+ * <p>
+ * La classe consente di eseguire l'algoritmo su un dataset caricato da file e di visualizzare i risultati.
+ * L'utente può specificare il raggio per il clustering e decidere se eseguire nuovamente l'algoritmo con un raggio diverso.
+ * </p>
+ * 
+ * @author Mirco Catalano
+ * @author Lorenzo Amato
+ * 
+ * @version 1.0
+ * @since 1.0
+ * 
+ * @see Data
+ * @see QTMiner
+ */
 public class MainTest {
 
 	/**
+	 * Costruttore di default.
+	 * Crea un'istanza della classe MainTest.
+	 */
+	public MainTest() { }
+
+	/**
+	 * Avvia l'esecuzione del programma.
 	 * @param args command line arguments (not used)
 	 */
 	public static void main(String[] args) 

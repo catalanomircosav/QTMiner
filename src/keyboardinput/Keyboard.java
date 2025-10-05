@@ -19,6 +19,12 @@ import java.util.*;
 */
 public class Keyboard {
 
+	/**
+	 * Costruttore di default.
+	 * Crea un'istanza della classe Keyboard.
+	 */
+	public Keyboard() { }
+
 	/** Flag che abilita o disabilita la stampa degli errori. */
 	private static boolean printErrors = true;
 

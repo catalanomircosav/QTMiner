@@ -30,9 +30,6 @@ public class EmptyDatasetException extends Exception
     */
     public EmptyDatasetException(String message) 
     {
-        if(message == null || message.isEmpty())
-            throw new IllegalArgumentException("Messaggio non valido.");
-
         super(message);
     }
 }
