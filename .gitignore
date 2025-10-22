@@ -1,5 +1,2 @@
 .vscode/
 target/
-target/classes
-target/test-classes
-target/classes/data
