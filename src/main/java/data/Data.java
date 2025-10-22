@@ -3,7 +3,7 @@ package data;
 import java.util.List;
 import java.util.LinkedList;
 
-// import exceptions.EmptyDatasetException;
+import exceptions.EmptyDatasetException;
 
 /**
  * Classe che rappresenta un insieme di esempi con attributi discreti,
@@ -68,8 +68,8 @@ public class Data
             { "rain", 12.5, "high", "strong", "no" }
         };
 
-        if (data.length == 0) continue; // per ora
-            // throw new EmptyDatasetException();
+        if (data.length == 0)
+            throw new EmptyDatasetException();
     }
 
     /**
