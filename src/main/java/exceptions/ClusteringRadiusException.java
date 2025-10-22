@@ -9,8 +9,7 @@ package exceptions;
 public class ClusteringRadiusException extends Exception
 {
     /**
-     * Crea l'eccezione con un messaggio di default.
-     * Il messaggio indica che tutte le tuple sono state raggruppate in un unico cluster.
+     * Costruisce l'eccezione con un messaggio predefinito.
      */
     public ClusteringRadiusException()
     {
@@ -18,7 +17,8 @@ public class ClusteringRadiusException extends Exception
     }
 
     /**
-     * Crea l'eccezione con un messaggio personalizzato.
+     * Costruisce l'eccezione con un messaggio personalizzato.
+     * 
      * @param message il messaggio di errore da associare all'eccezione.
      */
     public ClusteringRadiusException(String message)
