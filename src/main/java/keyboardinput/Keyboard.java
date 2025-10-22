@@ -335,7 +335,7 @@ public class Keyboard {
 		}
 		catch (Exception exception)
 		{
-			error("Errore nella lettura di un double: restituito NaN.");
+			System.err.println("Errore nella lettura di un double.");
 			value = Double.NaN;
 		}
 		

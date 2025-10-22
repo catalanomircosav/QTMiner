@@ -28,7 +28,7 @@ public class Data
     /**
      * Numero di esempi 
      */
-    private int numberOfExamples;
+    private int numberOfExamples = 14;
 
     /**
      * Schema degli attributi

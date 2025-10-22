@@ -1,5 +1,7 @@
 package data;
 
+import java.io.Serializable;
+
 /**
  * Classe astratta che rappresenta un item generico di un dataset.
  * <b>Questa classe deve essere estesa per creare item specifici (es. discreti o continui)</b>
@@ -13,7 +15,7 @@ package data;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  */
-public abstract class Item
+public abstract class Item implements Serializable
 {
     /**
      * Attrivuto riferito dall'item

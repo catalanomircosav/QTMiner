@@ -1,5 +1,7 @@
 package data;
 
+import java.io.Serializable;
+
 import java.lang.IllegalArgumentException;
 
 /**
@@ -13,7 +15,7 @@ import java.lang.IllegalArgumentException;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  */
-public abstract class Attribute
+public abstract class Attribute implements Serializable
 {
     /** 
      * Nome dell'attributo, non nullo e non vuoto.
@@ -29,7 +31,7 @@ public abstract class Attribute
      * Costruisce un nuovo attributo con il nome e l'indice specificati.
      * 
      * @param name nome dell'attributo; non può essere {@code null} o vuoto.
-     * @param idex indice dell'attributo; non può essere maggiore o uguale a 0.
+     * @param index indice dell'attributo; non può essere maggiore o uguale a 0.
      * 
      * @throws IllegalArgumentException se {@code name} è {@code null} o vuoto.
      * @throws IllegalArgumentException se {@code index} è negativo.

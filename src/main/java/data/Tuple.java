@@ -1,5 +1,6 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Set;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  */
-public class Tuple
+public class Tuple implements Serializable
 {
     /**
      * Array di item

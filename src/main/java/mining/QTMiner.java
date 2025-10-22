@@ -1,14 +1,21 @@
 package mining;
 
-import java.util.Arrays;
-
 import data.Data;
 import data.Tuple;
+
+import java.util.Arrays;
+
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileNotFoundException;
 
 import exceptions.ClusteringRadiusException;
 
 /**
- * La classe {@code QTMiner} implementa un algoritmo di clustering basato su un approccio di tipo "quasi-topologico".
+ * La classe {@code QTMiner} implementa un algoritmo di clustering.
  * 
  * @see Data
  * @see Tuple
@@ -17,7 +24,6 @@ import exceptions.ClusteringRadiusException;
  * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
- * 
  */
 public class QTMiner {
 
@@ -45,6 +51,63 @@ public class QTMiner {
 
         C = new ClusterSet(); 
         this.radius = radius;
+    }
+
+    /**
+     * Costruisce un ClusterSet leggendolo da un file
+     * 
+     * @param filename percorso del file da cui leggere il file
+     * 
+     * @throws FileNotFoundException se il file non viene trovato
+     * @throws IOException se ci sono errori di input/output
+     * @throws ClassNotFoundException se la classe non e' stata trovata
+     */
+    public QTMiner(String filename) throws FileNotFoundException, IOException, ClassNotFoundException
+    {
+        try
+        {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+
+            C = ((ClusterSet) in.readObject());
+        }
+        catch(FileNotFoundException exception)
+        {
+            System.err.println(exception.getMessage());
+        }
+        catch(IOException exception)
+        {
+            System.err.println(exception.getMessage());
+        }
+        catch(ClassNotFoundException exception)
+        {
+            System.err.println(exception.getMessage());
+        }
+    }
+
+    /**
+     * Salva il {@code ClusterSet} in un file con percorso specificato
+     * 
+     * @param filename percorso su cui salvare il file
+     * 
+     * @throws FileNotFoundException se il file non e' trovato
+     * @throws IOException se ci sono problemi di input/output
+     */
+    public void salva(String filename) throws FileNotFoundException, IOException
+    {
+        try
+        {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
+
+            out.writeObject(C);
+        }
+        catch(FileNotFoundException exception)
+        {
+            System.err.println(exception.getMessage());
+        }
+        catch(IOException exception)
+        {
+            System.err.println(exception.getMessage());
+        }
     }
 
     /**
@@ -91,8 +154,8 @@ public class QTMiner {
 
     /**
      * Costruisce un cluster per ciascuna tupla di data non 
-     * ancora clusterizzata in un cluster di C e restituisce il cluster
-     * candidato più popoloso 
+     * ancora clusterizzata in un cluster di C e restituisce 
+     * il cluster candidato più popoloso.
      * 
      * @param data il dataset di riferimento
      * @param isClustered array booleano che indica se una tupla è già stata clusterizzata
@@ -129,6 +192,7 @@ public class QTMiner {
                 }
             }
         }
+
         return best;
     }
 }

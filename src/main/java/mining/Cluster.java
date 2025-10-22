@@ -1,5 +1,6 @@
 package mining;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import data.Tuple;
  * @author Lorenzo Amato
  * @author Mirco Catalano
  */
-class Cluster implements Iterable<Integer>, Comparable<Cluster>
+class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable
 {
     /**
      * Centroide del cluster

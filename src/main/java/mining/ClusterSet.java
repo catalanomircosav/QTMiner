@@ -1,5 +1,6 @@
 package mining;
 
+import java.io.Serializable;
 import java.util.*;
 
 import data.Data;
@@ -14,7 +15,7 @@ import data.Data;
  * @author Mirco Catalano
  * @author Lorenzo Amato
  */
-public class ClusterSet implements Iterable<Cluster>
+public class ClusterSet implements Iterable<Cluster>, Serializable
 {
     /**
      * Insieme dei cluster.
@@ -74,12 +75,10 @@ public class ClusterSet implements Iterable<Cluster>
     {
         StringBuilder sb = new StringBuilder();
         int i = 0;
+
         for (Cluster cluster : this) 
-        {
-            if (cluster != null) 
-                sb.append(i).append(": ").append(cluster.toString(data)).append("\n");
-            i++;
-        }
+            sb.append(i++).append(": ").append(cluster.toString(data)).append("\n");
+        
         return sb.toString();
     }
 }
