@@ -4,7 +4,7 @@ import java.lang.IllegalArgumentException;
 
 /**
  * Classe astratta che rappresenta un attributo generico di un dataset.
- * <b>Questa classe deve essere estesa per creare attributi specifici (ad esempio discreti o continui)</b>.
+ * <b>Questa classe deve essere estesa per creare attributi specifici (es. discreti o continui)</b>.
  * 
  * <p>
  * Ogni attributo ha un nome e un indice univoco all'interno dello schema del dataset.
