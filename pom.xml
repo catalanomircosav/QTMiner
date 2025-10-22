@@ -11,7 +11,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>qtminer</name>
-  <url>https://github.com/catalanomircosav/QTMiner.git</url>
+  <url>https://github.com/catalanomircosav/QTClustering.git</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
