@@ -8,11 +8,11 @@ package data;
  * <b>La distanza è definita come 0 se i valori sono uguali e 1 se sono diversi</b>.
  * </p>
  * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
- * 
  * @see Item
  * @see DiscreteAttribute
+ * 
+ * @author Mirco Catalano
+ * @author Lorenzo Amato
  * 
  * @version 1.0
  * @since 1.0
