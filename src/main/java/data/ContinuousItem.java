@@ -59,5 +59,3 @@ public class ContinuousItem extends Item
         );
     }
 }
-
- 
