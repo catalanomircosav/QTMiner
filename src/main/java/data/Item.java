@@ -8,6 +8,8 @@ package data;
  * Ogni item è formato da un attributo e un valore associato a quell'attributo. 
  * </p>
  * 
+ * @see Attribute
+ * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
  * 
