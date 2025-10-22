@@ -123,7 +123,10 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable
     @Override
     public int compareTo(Cluster other)
     {
-        return Integer.compare(this.getSize(), other.getSize());
+        if (this.getSize() == other.getSize())
+            return Integer.compare(this.hashCode(), other.hashCode());
+        
+        return this.getSize() < other.getSize() ? -1 : 1;
     }
 
     /**
