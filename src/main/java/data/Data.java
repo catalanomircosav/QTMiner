@@ -45,7 +45,7 @@ public class Data
         numberOfExamples = 14;
 
         attributeSet.add(new DiscreteAttribute("Outlook",      0, new String[] { "overcast", "rain", "sunny" }));
-        attributeSet.add(new ContinuousAttribute("Temperature",1, 0.0, 38.7));
+        attributeSet.add(new ContinuousAttribute("Temperature",1, 3.2, 38.7));
         attributeSet.add(new DiscreteAttribute("Humidity",     2, new String[] { "high", "normal" }));
         attributeSet.add(new DiscreteAttribute("Wind",         3, new String[] { "weak", "strong" }));
         attributeSet.add(new DiscreteAttribute("Play Tennis",  4, new String[] { "yes", "no" }));

@@ -53,14 +53,9 @@ public class ContinuousAttribute extends Attribute
      * @param value valore da scalare nel dominio dell'attributo.
      * 
      * @return valore scalato nel dominio dell'attributo.
-     * 
-     * @throws IllegalArgumentException se {@code value} non è nel dominio {@code [min, max]}.  
     */
     public double getScaledValue(double value)
     {
-        if(value < this.min || value > this.max)
-            throw new IllegalArgumentException("Il valore non può essere fuori dal dominio.");
-
         return (value - this.min) / (this.max - this.min);
     }
 }
