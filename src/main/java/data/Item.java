@@ -12,9 +12,6 @@ package data;
  * 
  * @author Mirco Catalano
  * @author Lorenzo Amato
- * 
- * @version 1.0
- * @since 1.0
  */
 public abstract class Item
 {

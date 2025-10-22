@@ -15,9 +15,6 @@ import java.util.Iterator;
  * 
  * @author Lorenzo Amato
  * @author Mirco Catalano
- * 
- * @version 1.0
- * @since 1.0
  */
 public class DiscreteAttribute extends Attribute implements Iterable<String>
 {
