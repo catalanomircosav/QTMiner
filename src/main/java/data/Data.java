@@ -1,9 +1,30 @@
 package data;
 
 import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
+import database.Example;
+import database.QUERY_TYPE;
+import database.DBAccess;
+import database.TableData;
+import database.TableSchema;
+import database.TableSchema.Column;
+
+import java.net.ConnectException;
+
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
+
+import exceptions.EmptySetException;
+import exceptions.NoValueException;
 import exceptions.EmptyDatasetException;
+import exceptions.DatabaseConnectionException;
+
 
 /**
  * Classe che rappresenta un insieme di esempi con attributi discreti,
@@ -21,9 +42,9 @@ import exceptions.EmptyDatasetException;
 public class Data
 {
     /**
-     * Matrice contenente gli esempi
+     * Lista contenente gli esempi
      */
-    private Object[][] data;
+    private List<Example> data = new ArrayList<>();
 
     /**
      * Numero di esempi 
@@ -35,43 +56,59 @@ public class Data
      */
     private List<Attribute> attributeSet = new LinkedList<Attribute>();
 
-    /**
-     * Costruisce il dataset con 14 esempi e 5 attributi discreti del dataset.
-     * 
-     * @throws EmptyDatasetException se il dataset e' vuoto
-     */
-    public Data() throws EmptyDatasetException
+    public Data(String tableName) throws DatabaseConnectionException, EmptyDatasetException, SQLException
     {
-        numberOfExamples = 14;
+        DBAccess databaseAccess = new DBAccess();
 
-        attributeSet.add(new DiscreteAttribute("Outlook",      0, new String[] { "overcast", "rain", "sunny" }));
-        attributeSet.add(new ContinuousAttribute("Temperature",1, 3.2, 38.7));
-        attributeSet.add(new DiscreteAttribute("Humidity",     2, new String[] { "high", "normal" }));
-        attributeSet.add(new DiscreteAttribute("Wind",         3, new String[] { "weak", "strong" }));
-        attributeSet.add(new DiscreteAttribute("Play Tennis",  4, new String[] { "yes", "no" }));
-
-        data = new Object[][]
+        try
         {
-            { "sunny", 30.3, "high", "weak", "no" },
-            { "sunny", 30.3, "high", "strong", "no" },
-            { "overcast", 30, "high", "weak", "yes" },
-            { "rain", 13, "high", "weak", "yes" },
-            { "rain", 0.0, "normal", "weak", "yes" },
-            { "rain", 0.0, "normal", "strong", "no" },
-            { "overcast", 0.1, "normal", "strong", "yes" },
-            { "sunny", 13.0, "high", "weak", "no" },
-            { "sunny", 0.1, "normal", "weak", "yes" },
-            { "rain", 12.0, "normal", "weak", "yes" },
-            { "sunny", 12.5, "normal", "strong", "yes" },
-            { "overcast", 12.5, "high", "strong", "yes" },
-            { "overcast", 29.21, "normal", "weak", "yes" },
-            { "rain", 12.5, "high", "strong", "no" }
-        };
+            databaseAccess.initConnection();
 
-        if (data.length == 0)
-            throw new EmptyDatasetException();
+            TableSchema tableSchema = new TableSchema(databaseAccess, tableName);
+
+            createAttributesFromTableSchema(tableName, databaseAccess, tableSchema);
+
+            TableData tableData = new TableData(databaseAccess);
+
+            try
+            {
+                List<Example> transactions = tableData.getDistinctTransactions(tableName);
+                
+                if(transactions.isEmpty())
+                    throw new EmptyDatasetException("La tabella " + tableName + " e' vuota.");
+                
+                data.addAll(transactions);
+                numberOfExamples = data.size();
+            }
+            catch(EmptySetException exception)
+            {
+                System.err.println(exception.getMessage());
+            }
+        }
+        catch(EmptyDatasetException exception)
+        {
+            throw exception;
+        }
+        catch(SQLException exception)
+        {
+            throw exception;
+        }
+        catch(DatabaseConnectionException exception)
+        {
+            throw exception;
+        }
+        finally 
+        {
+            try
+            {
+                databaseAccess.closeConnection();
+            } 
+            catch(SQLException exception)
+            {
+                System.err.println(exception.getMessage());
+            }
+        }
     }
-
     /**
      * Restituisce il numero totale di esempi presenti nel dataset
      * 
@@ -119,7 +156,7 @@ public class Data
                 throw new ArrayIndexOutOfBoundsException("Indici fuori dai limiti.");
 
         
-        return data[exampleIndex][attributeIndex];
+        return ((data.get(exampleIndex).get(attributeIndex)));
     }
 
     /**
@@ -134,7 +171,7 @@ public class Data
         for (int i = 0; i < attributeSet.size(); i++)
         {
             Attribute a = attributeSet.get(i);
-            Object v = data[index][i];
+            Object v = data.get(index).get(i);
 
             if (a instanceof ContinuousAttribute)
                 tuple.add(new ContinuousItem(a, ((Number) v).doubleValue()), i);
@@ -164,12 +201,73 @@ public class Data
         {
             sb.append(i).append(": ");
             for(int j = 0; j < attributeSet.size(); j++)
-                sb.append(data[i][j]).append(", "); 
+                sb.append(data.get(i).get(j)).append(", "); 
             
             sb.setLength(sb.length() - 2);
             sb.append("\n");
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Crea gli attributi a partire dalla tabella del database.
+     * <p>E' un metodo privato, non accessibile al di fuori della classe.</p>
+     * 
+     * @param tableName nome della tabella
+     * @param database accesso al database
+     * @param tableSchema schema della tabella del database
+     * 
+     * @throws SQLException se ci sono errori nella lettura dello schema
+     */
+    private void createAttributesFromTableSchema(String tableName, DBAccess database, TableSchema tableSchema) throws SQLException
+    {
+        TableData tableData = new TableData(database);
+
+        for(int i = 0; i < tableSchema.getNumberOfAttributes(); i++)
+        {
+            Column column = tableSchema.getColumn(i);
+            String columnName = column.getColumnName();
+
+            if(column.isNumber())
+            {
+                try
+                {
+                    Object minObj = tableData.getAggregateColumnValue(tableName, column, QUERY_TYPE.MIN);
+                    Object maxObj = tableData.getAggregateColumnValue(tableName, column, QUERY_TYPE.MAX);
+
+                    double min = 0.0, max = 0.0;
+
+                    if(minObj instanceof Number)
+                        min  = ((Number) minObj).doubleValue();
+                    else if (minObj != null)
+                        min = Double.parseDouble(minObj.toString());
+
+                    if(maxObj instanceof Number)
+                        max = ((Number) maxObj).doubleValue();
+                    else if (minObj != null)
+                        max = Double.parseDouble(maxObj.toString());
+
+                    attributeSet.add(new ContinuousAttribute(columnName, i, min, max));
+                }
+                catch(NoValueException exception)
+                {
+                    System.err.println(exception.getMessage());
+                }
+            }
+            else
+            {
+                Set<Object> distinctValues = tableData.getDistinctColumnValues(tableName, column);
+
+                String[] values = new String[distinctValues.size()];
+
+                
+                int j = 0;
+                for(Object v : distinctValues)
+                    values[j++] = v.toString();
+                
+                attributeSet.add(new DiscreteAttribute(columnName, i, values));
+            }
+        }
     }
 }
