@@ -94,13 +94,13 @@ Supporta:
 ```bash
 cd qtserver/
 mvn clean package
-java -jar target/qtserver-1.0.jar
+java -jar target/qtserver-1.0.jar <port>
 ```
 2. Avvia il client
 ```bash
 cd qtclient/
 mvn clean package
-java -jar target/qtclient-1.0.jar
+java -jar target/qtclient-1.0.jar <ip> <port>
 ```
 ## Estensioni previste
 | Estensione | Stato
