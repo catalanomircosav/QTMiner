@@ -8,14 +8,8 @@ import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.rmi.ServerException;
-
 import mining.QTMiner;
 import data.Data;
-
-import exceptions.DatabaseConnectionException;
-import exceptions.EmptyDatasetException;
-import java.sql.SQLException;
 
 public class ServerOneClient extends Thread {
     private Socket socket;
@@ -39,6 +33,7 @@ public class ServerOneClient extends Thread {
         Data data = null;
         Double radius = null;
         String tname = "";
+
         try
         {
             while(!socket.isClosed())
@@ -52,12 +47,10 @@ public class ServerOneClient extends Thread {
 
                         try
                         {
-                            System.out.println("ciao 0");
-
                             data = new Data(tname);
-                            System.out.println("ciao 1");
                             
                             out.writeObject("OK");
+                            out.writeObject(data.toString());
                         }
                         catch(Exception e)
                         {
@@ -96,19 +89,30 @@ public class ServerOneClient extends Thread {
                     break;
 
                     case 3:
-                        System.out.print("Reading from file...");
+                        System.out.print("Computing from file...");
                         
-                        filename = (String) in.readObject() + "_" + (double) in.readObject() + ".dmp";
+                        String name = (String) in.readObject();
+                        radius = (Double) in.readObject();
+
+                        filename = name + "_" + radius + ".dmp";
 
                         try
                         {
+                            data = new Data(name);
                             kmeans = new QTMiner(filename);
+
+                            kmeans.compute(data);
+
                             out.writeObject("OK");
                             out.writeObject(kmeans.getC().toString());
                         }
                         catch(FileNotFoundException exception)
                         {
                             System.err.println(exception.getMessage());
+                        }
+                        catch(Exception e)
+                        {
+
                         }
                     break;
 

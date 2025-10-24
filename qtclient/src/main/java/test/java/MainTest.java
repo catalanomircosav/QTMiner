@@ -7,7 +7,6 @@ import java.net.SocketException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.FileNotFoundException;
 
 import keyboardinput.Keyboard;
 
@@ -38,9 +37,9 @@ public class MainTest {
             do
             {
                 System.out.println("(0) Carica cluster dal db");
-                System.out.println("(1) Compute");
+                System.out.println("(1) Computa da DB");
                 System.out.println("(2) Salva cluster in file");
-                System.out.println("(3) Leggi da file");
+                System.out.println("(3) Computa da file");
                 System.out.print("(0/1/2/3):");
 
                 answer = Keyboard.readInt();
@@ -56,16 +55,22 @@ public class MainTest {
         return answer;
     }
 
+    // ! OPZIONE 0
     private void storeTableFromDb() throws SocketException, ServerException, IOException, ClassNotFoundException
     {
-        System.out.print("Nome tabella:");
+        System.out.print("Nome tabella: ");
         String tabName=Keyboard.readString();
         out.writeObject(tabName);
 
+        // todo: aggiungere il risultato
         String result = (String)in.readObject();
         if(!result.equals("OK"))
             throw new ServerException(result);
+        
+        // ? stampa Data
+        System.out.println((String) in.readObject());
     }
+
 
     private String learningFromDbTable() throws SocketException, ServerException, IOException, ClassNotFoundException
     {
@@ -75,13 +80,14 @@ public class MainTest {
             System.out.print("Radius:");
             r = Keyboard.readDouble();
         } while(r <= 0);
+
         out.writeObject(r);
 
         String result = (String)in.readObject();
         if(result.equals("OK"))
         {
             System.out.println("Number of Clusters:"+ in.readObject());
-            return (String)in.readObject();
+            return (String) in.readObject(); // questo output è il clusterset
         } else
             throw new ServerException(result);
     }
@@ -93,24 +99,28 @@ public class MainTest {
             throw new ServerException(result);
     }
 
-    private String learningFromFile() throws SocketException, ServerException, IOException, ClassNotFoundException
+    private String learningfromFile() throws SocketException, ServerException, IOException, ClassNotFoundException
     {
-        System.out.print("Nome file: ");
-        String fileName = Keyboard.readString();
-        out.writeObject(fileName);
+        System.out.print("Nome tabella: ");
+        out.writeObject(Keyboard.readString());
+
+        System.out.print("Raggio: ");
+        out.writeObject(Keyboard.readDouble());
 
         String result = (String) in.readObject();
         if(result.equals("OK"))
-            return (String) in.readObject();
-        else throw new ServerException(result);
+        {
+            String risultato = (String) in.readObject();
 
-		
+            return risultato;
+        }
+        else throw new ServerException(result);
     }
 
     public static void main(String[] args) 
     {
         if (args.length < 2) {
-            System.out.println("Uso: java MainTest <ip> <porta>");
+            System.out.println("Uso: <ip> <porta>");
             return;
         }
 
@@ -138,9 +148,7 @@ public class MainTest {
                     case 0:
                         try
                         {
-                            String clusters = main.learningFromFile();
-                            System.out.println("Cluster caricati da file:");
-                            System.out.println(clusters);
+                            main.storeTableFromDb();
                         }
                         catch (Exception exception)
                         {
@@ -173,11 +181,12 @@ public class MainTest {
                         }
                         break;
 
-                    case 3: // Store table from DB
+                    case 3:
                         try
                         {
-                            main.storeTableFromDb();
-                            System.out.println("Tabella verificata con successo");
+                            String clusters = main.learningfromFile();
+                            System.out.println("Cluster dal file: ");
+                            System.out.println(clusters);
                         }
                         catch (Exception exception)
                         {

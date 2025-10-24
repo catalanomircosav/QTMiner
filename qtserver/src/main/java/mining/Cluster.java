@@ -129,6 +129,24 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable
         return this.getSize() < other.getSize() ? -1 : 1;
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Centroid=(");
+        for (int i = 0; i < centroid.getLength(); i++)
+            sb.append(centroid.get(i).getValue()).append(" ");
+
+        if (centroid.getLength() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        sb.append(")");
+        sb.append(" Size=").append(getSize());
+
+        return sb.toString();
+    }
+
     /**
      * Restituisce una rappresentazione testuale del cluster
      * rispetto al dataset fornito.
