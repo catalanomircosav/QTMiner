@@ -4,84 +4,73 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Classe che rappresenta un esempio dal database.
- * <p>
- * Ogni esempio e' costituito da una lista di oggetti che possono essere di qualsiasi tipo.
- * </p>
- * 
- * @see Comparable
- * 
- * @author Mirco Lorenzo
- * @author Lorenzo Amato
+ * Rappresenta un esempio (tupla) estratto dal database.
+ * Ogni esempio è costituito da una lista di valori eterogenei
+ * (numerici o stringhe), tutti confrontabili tra loro in modo
+ * lessicografico.
  */
-public class Example implements Comparable<Example>
-{
-    /**
-     * Array contenente oggetti dell'esempio
-     */
-    private List<Object> example = new ArrayList<>();
+public class Example implements Comparable<Example> {
 
     /**
-     * Aggiunge un oggetto all'esempio.
-     * 
-     * @param other oggetto da aggiungere
+     * Lista degli oggetti che compongono l'esempio.
      */
-    public void add(Object other)
-    {
-        example.add(other);
+    private final List<Object> example = new ArrayList<>();
+
+    /**
+     * Aggiunge un valore all'esempio.
+     *
+     * @param value valore da aggiungere
+     */
+    public void add(Object value) {
+        example.add(value);
     }
 
     /**
-     * Restituisce l'oggetto all'indice specificato.
-     * 
-     * @param i indice dell'oggetto
-     * 
-     * @return oggetto dell'insieme
+     * Restituisce il valore alla posizione indicata.
+     *
+     * @param i indice del valore
+     * @return valore dell'esempio
      */
-    public Object get(int i)
-    {
+    public Object get(int i) {
         return example.get(i);
     }
 
     /**
-     * Confronta questo esempio con un altro specificato.
-     * <p>
-     * Il confronto avviene in ordine lessicografico, confrontando gli oggetti
-     * nelle stesse posizioni finche' non viene trovata una differenza.
-     * 
-     * Se tutti gli oggetti sono uguali, gli esempi sono considerati uguali.
-     * </p>
-     * 
-     * @param other esempio da comparare
+     * Confronta questo esempio con un altro lessicograficamente.
+     * Gli oggetti sono confrontati uno ad uno tramite {@link Comparable}.
+     *
+     * @param other l'altro esempio da confrontare
+     * @return valore negativo, zero o positivo a seconda dell'ordine
      */
-    public int compareTo(Example other)
-    {
-        int i = 0;
-        for(Object o : other.example)
-        {
-            if(!o.equals(this.example.get(i)))
-				return ((Comparable)o).compareTo(example.get(i));
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public int compareTo(Example other) {
+        int size = Math.min(this.example.size(), other.example.size());
 
-            i++;
+        for (int i = 0; i < size; i++) {
+            Object o1 = this.example.get(i);
+            Object o2 = other.example.get(i);
+
+            if (!o1.equals(o2)) {
+                return ((Comparable) o1).compareTo(o2);
+            }
         }
 
-        return 0;
+        // Se tutti uguali fin qui, decide la lunghezza
+        return Integer.compare(this.example.size(), other.example.size());
     }
 
     /**
-     * Restituisce una rappresentazione testuale dell'esempio.
-     * La stringa risultante contiene la rappresentazione stringa di
-     * tutti gli oggetti dell'esempio, separati da spazi.
-     * 
-     * @return rappresentazione testuale dell'esempio.
+     * @return rappresentazione testuale dell'esempio con valori separati da spazio
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-
-        for(Object o : example)
+        for (Object o : example)
             sb.append(o.toString()).append(" ");
+
+        if (!example.isEmpty())
+            sb.setLength(sb.length() - 1);
 
         return sb.toString();
     }

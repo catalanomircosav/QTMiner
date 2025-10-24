@@ -1,21 +1,31 @@
 package exceptions;
 
 /**
- * Eccezione controllata sollevata nel caso in cui la query non restituisca alcun risultato.
- * 
- * @see Exception
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
+ * Eccezione controllata sollevata quando una query o una richiesta
+ * di valore non restituisce alcun risultato valido.
+ * <p>
+ * Viene tipicamente usata in contesti in cui ci si aspetta almeno
+ * un valore da elaborare, ma l’operazione fallisce restituendo
+ * un insieme vuoto o un valore assente.
+ * </p>
  */
 public class NoValueException extends Exception {
-    public NoValueException()
-    {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Costruisce l'eccezione con un messaggio di default.
+     */
+    public NoValueException() {
         super("Non ci sono valori nel risultato.");
     }
 
-    public NoValueException(String message)
-    {
+    /**
+     * Costruisce l'eccezione con un messaggio personalizzato.
+     *
+     * @param message il messaggio descrittivo dell’errore
+     */
+    public NoValueException(String message) {
         super(message);
     }
 }

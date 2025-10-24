@@ -3,201 +3,151 @@ package database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import exceptions.EmptySetException;
 import exceptions.NoValueException;
-
 import database.TableSchema.Column;
 
 /**
- * Classe che rappresenta i dati di una tabella del database.
- * <p>
- * Questa classe consente di accedere e manipolare i dati memorizzati in una tabella
- * del database attraverso operazioni di lettura, estrazione di valori distinti e calcolo
- * di valori aggregati (minimo e massimo). 
- * Ogni riga della tabella viene modellata da un oggetto {@link Example}.
- * </p>
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
+ * Fornisce metodi per estrarre dati da una tabella del database,
+ * quali transazioni distinte, valori distinti di colonna e valori
+ * aggregati (min/max).
  */
-public class TableData 
-{
+public class TableData {
 
-	DBAccess db;
-	
-	/**
-	 * Costruisce un oggetto TableData associato al database specificato.
-	 * 
-	 * @param db accesso al database
-	 */
-	public TableData(DBAccess db) 
-	{
-		this.db = db;
-	}
+    /** Riferimento all’accesso al database. */
+    private final DBAccess db;
 
-	/**
-	 * Estrae le transazioni distinte presenti nella tabella specificata.
-	 * <p>
-	 * Ogni transazione è rappresentata da un'istanza della classe {@link Example},
-	 * i cui valori corrispondono ai campi della tupla. 
-	 * Il metodo genera un'eccezione se il result set risultante è vuoto.
-	 * </p>
-	 * 
-	 * @param table nome della tabella nel database
-	 * 
-	 * @return lista contenente le transazioni distinte presenti nella tabella
-	 * 
-	 * @throws SQLException se si verifica un errore durante l'esecuzione della query
-	 * @throws EmptySetException se il result set è vuoto
-	 */
-	public List<Example> getDistinctTransactions(String table) throws SQLException, EmptySetException
-	{
-		LinkedList<Example> transSet = new LinkedList<Example>();
-		Statement statement;
-		TableSchema tSchema=new TableSchema(db,table);
-		
-		String query="select distinct ";
-		
-		for(int i=0;i<tSchema.getNumberOfAttributes();i++)
-		{
-			Column c=tSchema.getColumn(i);
-			if(i>0)
-				query+=",";
-			query += c.getColumnName();
-		}
+    /**
+     * Costruisce un oggetto {@code TableData} associato al database specificato.
+     *
+     * @param db accesso al database già inizializzato
+     */
+    public TableData(DBAccess db) {
+        this.db = db;
+    }
 
-		if(tSchema.getNumberOfAttributes()==0)
-			throw new SQLException();
-		query += (" FROM "+table);
-		
-		statement = db.getConnection().createStatement();
-		ResultSet rs = statement.executeQuery(query);
-		boolean empty=true;
+    /**
+     * Estrae tutte le transazioni distinte presenti nella tabella.
+     * Ogni transazione è rappresentata da un {@link Example}.
+     *
+     * @param table nome della tabella
+     * @return lista di transazioni distinte
+     *
+     * @throws SQLException se la query fallisce
+     * @throws EmptySetException se la tabella è vuota
+     */
+    public List<Example> getDistinctTransactions(String table) throws SQLException, EmptySetException {
+        LinkedList<Example> transSet = new LinkedList<>();
+        TableSchema schema = new TableSchema(db, table);
 
-		while (rs.next()) 
-		{
-			empty=false;
-			Example currentTuple=new Example();
-			for(int i=0;i<tSchema.getNumberOfAttributes();i++)
-				if(tSchema.getColumn(i).isNumber())
-					currentTuple.add(rs.getDouble(i+1));
-				else
-					currentTuple.add(rs.getString(i+1));
-			transSet.add(currentTuple);
-		}
+        if (schema.getNumberOfAttributes() == 0)
+            throw new SQLException("La tabella non contiene attributi.");
 
-		rs.close();
-		statement.close();
+        StringBuilder query = new StringBuilder("SELECT DISTINCT ");
+        for (int i = 0; i < schema.getNumberOfAttributes(); i++) {
+            Column c = schema.getColumn(i);
+            if (i > 0)
+                query.append(", ");
+            query.append(c.getColumnName());
+        }
+        query.append(" FROM ").append(table);
 
-		if(empty) throw new EmptySetException();
-		
-		return transSet;
-	}
+        try (Statement statement = db.getConnection().createStatement();
+             ResultSet rs = statement.executeQuery(query.toString())) {
 
-	/**
-	 * Estrae i valori distinti e ordinati in modo crescente della colonna specificata.
-	 * <p>
-	 * I valori distinti vengono letti dal database e inseriti in un insieme ordinato
-	 * (implementato tramite {@link TreeSet}), che viene restituito al chiamante.
-	 * </p>
-	 * 
-	 * @param table nome della tabella nel database
-	 * @param column colonna di cui estrarre i valori distinti
-	 * 
-	 * @return insieme di valori distinti e ordinati della colonna specificata
-	 * 
-	 * @throws SQLException se si verifica un errore durante l'esecuzione della query
-	 */
-	public  Set<Object>getDistinctColumnValues(String table,Column column) throws SQLException
-	{
-		Set<Object> valueSet = new TreeSet<Object>();
-		Statement statement;
-		TableSchema tSchema=new TableSchema(db,table);
-		
-		String query="select distinct ";
-		
-		query+= column.getColumnName();
-		
-		query += (" FROM "+table);
-		
-		query += (" ORDER BY " +column.getColumnName());
-		
-		statement = db.getConnection().createStatement();
-		ResultSet rs = statement.executeQuery(query);
+            boolean empty = true;
 
-		while (rs.next()) 
-		{
-				if(column.isNumber())
-					valueSet.add(rs.getDouble(1));
-				else
-					valueSet.add(rs.getString(1));
-		}
+            while (rs.next()) {
+                empty = false;
+                Example tuple = new Example();
+                for (int i = 0; i < schema.getNumberOfAttributes(); i++) {
+                    Column c = schema.getColumn(i);
+                    if (c.isNumber())
+                        tuple.add(rs.getDouble(i + 1));
+                    else
+                        tuple.add(rs.getString(i + 1));
+                }
+                transSet.add(tuple);
+            }
 
-		rs.close();
-		statement.close();
-		
-		return valueSet;
-	}
+            if (empty) {
+                throw new EmptySetException("La tabella non contiene transazioni.");
+            }
+        }
 
-	/**
-	 * Calcola un valore aggregato (minimo o massimo) per la colonna specificata.
-	 * <p>
-	 * Il tipo di aggregazione è determinato dal parametro {@code aggregate},
-	 * che può assumere i valori {@code QUERY_TYPE.MIN} o {@code QUERY_TYPE.MAX}.
-	 * Se la tabella non contiene valori validi per la colonna, viene sollevata
-	 * un'eccezione {@link NoValueException}.
-	 * </p>
-	 * 
-	 * @param table nome della tabella nel database
-	 * @param column colonna di cui calcolare il valore aggregato
-	 * @param aggregate tipo di aggregazione da applicare (MIN o MAX)
-	 * 
-	 * @return valore minimo o massimo della colonna specificata
-	 * 
-	 * @throws SQLException se si verifica un errore durante l'esecuzione della query
-	 * @throws NoValueException se il result set è vuoto o il valore è nullo
-	 */
-	public  Object getAggregateColumnValue(String table,Column column,QUERY_TYPE aggregate) throws SQLException,NoValueException
-	{
-		Statement statement;
-		TableSchema tSchema=new TableSchema(db,table);
-		Object value=null;
-		String aggregateOp="";
-		
-		String query="select ";
-		if(aggregate==QUERY_TYPE.MAX)
-			aggregateOp+="max";
-		else
-			aggregateOp+="min";
-		query+=aggregateOp+"("+column.getColumnName()+ ") FROM "+table;
-		
-		
-		statement = db.getConnection().createStatement();
-		ResultSet rs = statement.executeQuery(query);
-		if (rs.next()) 
-		{
-				if(column.isNumber())
-					value=rs.getFloat(1);
-				else
-					value=rs.getString(1);
-		}
+        return transSet;
+    }
 
-		rs.close();
-		statement.close();
+    /**
+     * Estrae i valori distinti e ordinati della colonna specificata.
+     *
+     * @param table nome della tabella
+     * @param column colonna della quale estrarre i valori
+     * @return insieme ordinato dei valori distinti
+     *
+     * @throws SQLException se la query fallisce
+     */
+    public Set<Object> getDistinctColumnValues(String table, Column column) throws SQLException {
+        Set<Object> valueSet = new TreeSet<>();
 
-		if(value==null)
-			throw new NoValueException("No " + aggregateOp+ " on "+ column.getColumnName());
-			
-		return value;
-	}
+        String query = "SELECT DISTINCT " + column.getColumnName() +
+                       " FROM " + table +
+                       " ORDER BY " + column.getColumnName();
+
+        try (Statement statement = db.getConnection().createStatement();
+             ResultSet rs = statement.executeQuery(query)) {
+
+            while (rs.next()) {
+                if (column.isNumber())
+                    valueSet.add(rs.getDouble(1));
+                else
+                    valueSet.add(rs.getString(1));
+            }
+        }
+
+        return valueSet;
+    }
+
+    /**
+     * Calcola il valore minimo o massimo di una colonna.
+     *
+     * @param table nome della tabella
+     * @param column colonna su cui effettuare l’aggregazione
+     * @param aggregate tipo di aggregazione (MIN o MAX)
+     *
+     * @return valore minimo o massimo trovato
+     *
+     * @throws SQLException se la query fallisce
+     * @throws NoValueException se non esistono valori validi
+     */
+    public Object getAggregateColumnValue(String table, Column column, QUERY_TYPE aggregate)
+            throws SQLException, NoValueException {
+
+        String op = (aggregate == QUERY_TYPE.MAX ? "MAX" : "MIN");
+        String query = "SELECT " + op + "(" + column.getColumnName() + ") FROM " + table;
+
+        Object value = null;
+
+        try (Statement statement = db.getConnection().createStatement();
+             ResultSet rs = statement.executeQuery(query)) {
+
+            if (rs.next()) {
+                if (column.isNumber())
+                    value = rs.getFloat(1);
+                else
+                    value = rs.getString(1);
+            }
+        }
+
+        if (value == null) {
+            throw new NoValueException("Nessun valore per " + op + " sulla colonna: " + column.getColumnName());
+        }
+
+        return value;
+    }
 }

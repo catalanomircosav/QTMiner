@@ -9,152 +9,117 @@ import java.sql.SQLException;
 import java.sql.DatabaseMetaData;
 
 /**
- * Classe che rappresenta lo schema di una tabella di un database.
+ * Rappresenta lo schema di una tabella presente in un database relazionale.
  * <p>
- * Questa classe estrae e memorizza i metadati di una tabella del database.
+ * Questa classe estrae i metadati della tabella tramite JDBC e converte
+ * i tipi SQL in tipologie semplificate utilizzate all'interno
+ * dell'applicazione ("number" o "string").
  * </p>
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
+ *
+ * @see Column
  */
-public class TableSchema
-{
+public class TableSchema {
+
     /**
-     * Classe che rappresenta uno schema della tabella
+     * Rappresenta una singola colonna dello schema della tabella.
      */
-    public class Column
-    {
-        /**
-         * Nome della colonna
-         */
-        private String name;
+    public class Column {
+
+        /** Nome della colonna. */
+        private final String name;
+
+        /** Tipo semplificato ("number" o "string"). */
+        private final String type;
 
         /**
-         * Tipo di dato semplificato
+         * Costruisce una colonna dello schema.
+         *
+         * @param name nome della colonna
+         * @param type tipo semplificato ("number" o "string")
          */
-        private String type;
-
-        /**
-         * Costruisce una nuova colonna con nome e tipo specificati
-         * 
-         * @param name nome della colonne
-         * @param type tipo della colonna
-         */
-        Column(String name, String type)
-        {
+        Column(String name, String type) {
             this.name = name;
             this.type = type;
         }
 
         /**
-         * Restituisce il nome della colonna
-         * 
-         * @return nome della colonna
+         * @return il nome della colonna
          */
-        public String getColumnName()
-        {
+        public String getColumnName() {
             return name;
         }
 
         /**
-         * Verifica se la colonna contiene valori numerici
-         * 
-         * @return {@code true} se il tipo della colonna e' un numero
-         *         {@code false} se e' una stringa
+         * @return {@code true} se la colonna contiene valori numerici
          */
-        public boolean isNumber()
-        {
+        public boolean isNumber() {
             return type.equals("number");
         }
 
         /**
-         * Restituisce una rappresentazione testuale della colonna
-         * 
-         * @return stringa contenente nome e tipo della colonna, separati da " + ".
+         * @return una rappresentazione testuale della colonna
          */
-        public String toString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append(name).append(" + ").append(type);
-            
-            return sb.toString();   
+        @Override
+        public String toString() {
+            return name + " + " + type;
         }
     }
 
-    /**
-     * Riferimento all'accesso al database
-     */
-    private DBAccess db;
+    /** Lista delle colonne che definiscono lo schema. */
+    private final List<Column> tableSchema = new ArrayList<>();
 
     /**
-     * Lista delle colonne che compongono lo schema
+     * Costruisce lo schema della tabella specificata interrogando il database.
+     *
+     * @param db accesso al database già connesso
+     * @param tableName nome della tabella della quale estrarre lo schema
+     *
+     * @throws SQLException se si verificano errori durante l'accesso ai metadati
      */
-    private List<Column> tableSchema = new ArrayList<Column>();
+    public TableSchema(DBAccess db, String tableName) throws SQLException {
 
-    /**
-     * Costruisce lo schema della tabella specificata.
-     * <p>
-     * Estrae i metadati della tabella dal database e mappa i tipi SQL nativi
-     * ai tipi JAVA semplificati
-     * </p>
-     * 
-     * @param db accesso al database
-     * @param tableName nome della tabella di cui estrarre lo schema
-     * 
-     * @throws SQLException se si verifica un errore durante l'accesso ai dati
-     */
-    public TableSchema(DBAccess db, String tableName) throws SQLException
-    {
-        this.db = db;
+        final HashMap<String, String> typeMap = new HashMap<>();
+        typeMap.put("BIT", "string");
+        typeMap.put("INT", "number");
+        typeMap.put("CHAR", "string");
+        typeMap.put("LONG", "number");
+        typeMap.put("SHORT", "number");
+        typeMap.put("FLOAT", "number");
+        typeMap.put("DOUBLE", "number");
+        typeMap.put("VARCHAR", "string");
+        typeMap.put("LONGVARCHAR", "string");
 
-        HashMap<String, String> mapSQL_JAVATypes = new HashMap<String, String>();
-        
-        mapSQL_JAVATypes.put("BIT", "string");
-        mapSQL_JAVATypes.put("INT", "number");
-        mapSQL_JAVATypes.put("CHAR", "string");
-        mapSQL_JAVATypes.put("LONG", "number");
-        mapSQL_JAVATypes.put("SHORT", "number");
-        mapSQL_JAVATypes.put("FLOAT", "number");
-        mapSQL_JAVATypes.put("DOUBLE", "number");
-        mapSQL_JAVATypes.put("VARCHAR", "string");
-        mapSQL_JAVATypes.put("LONGVARCHAR", "string");
-        
         Connection conn = db.getConnection();
         DatabaseMetaData meta = conn.getMetaData();
         ResultSet results = meta.getColumns(null, null, tableName, null);
-    
-        while(results.next())
-        {
-            if(mapSQL_JAVATypes.containsKey(results.getString("TYPE_NAME")))
+
+        while (results.next()) {
+            String sqlType = results.getString("TYPE_NAME");
+            if (typeMap.containsKey(sqlType)) {
                 tableSchema.add(new Column(
                     results.getString("COLUMN_NAME"),
-                    mapSQL_JAVATypes.get(results.getString("TYPE_NAME"))
+                    typeMap.get(sqlType)
                 ));
+            }
         }
 
         results.close();
     }
 
     /**
-     * Restituisce il numero di colonne dello schema della tabella
-     * 
-     * @return il numero di colonne nella tabella
+     * @return il numero di colonne nello schema
      */
-    public int getNumberOfAttributes()
-    {
+    public int getNumberOfAttributes() {
         return tableSchema.size();
     }
 
     /**
-     * Restituisce la colonna alla posizione specificata
-     * 
-     * @param index indice della colonna
+     * Restituisce la colonna alla posizione indicata.
      *
-     * @return l'oggetto alla posizione sepcificata
+     * @param index indice della colonna
+     * @return la colonna corrispondente
      */
-    public Column getColumn(int index)
-    {
+    public Column getColumn(int index) {
         return tableSchema.get(index);
     }
 }

@@ -2,84 +2,62 @@ package data;
 
 import java.io.Serializable;
 
-import java.lang.IllegalArgumentException;
-
 /**
  * Classe astratta che rappresenta un attributo generico di un dataset.
- * <b>Questa classe deve essere estesa per creare attributi specifici (es. discreti o continui)</b>.
- * 
  * <p>
- * Ogni attributo ha un nome e un indice univoco all'interno dello schema del dataset.
+ * Ogni attributo ha un nome e una posizione (indice) nello schema del dataset.
+ * Le sottoclassi dovranno definire il tipo di attributo (es. discreto o continuo).
  * </p>
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
+ *
+ * @see DiscreteAttribute
+ * @see ContinuousAttribute
  */
-public abstract class Attribute implements Serializable
-{
-    /** 
-     * Nome dell'attributo, non nullo e non vuoto.
-    */
+public abstract class Attribute implements Serializable {
+
+    /** Nome dell'attributo (non nullo e non vuoto). */
     private final String name;
 
-    /**
-     * Indice dell'attributo all'interno dello schema del dataset, >= 0
-     */
+    /** Indice dell'attributo nello schema del dataset (>= 0). */
     private final int index;
 
     /**
-     * Costruisce un nuovo attributo con il nome e l'indice specificati.
-     * 
-     * @param name nome dell'attributo; non può essere {@code null} o vuoto.
-     * @param index indice dell'attributo; non può essere maggiore o uguale a 0.
-     * 
-     * @throws IllegalArgumentException se {@code name} è {@code null} o vuoto.
-     * @throws IllegalArgumentException se {@code index} è negativo.
+     * Costruisce un attributo con nome e indice specificati.
+     *
+     * @param name  nome dell'attributo; non può essere {@code null} o vuoto
+     * @param index posizione dell'attributo; deve essere >= 0
+     *
+     * @throws IllegalArgumentException se {@code name} è {@code null} o vuoto
+     * @throws IllegalArgumentException se {@code index} è negativo
      */
-    protected Attribute(String name, int index)
-    {
-        if(name == null || name.isEmpty())
-            throw new IllegalArgumentException("Nome non valido.");
-
+    protected Attribute(String name, int index) {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Nome attributo non valido.");
         if (index < 0)
-            throw new IllegalArgumentException("Indice negativo.");
+            throw new IllegalArgumentException("Indice attributo negativo.");
 
         this.name = name;
         this.index = index;
     }
 
     /**
-     * Restituisce il nome dell'attributo.
-     * 
-     * @return nome dell'attributo.
+     * @return nome dell'attributo
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * Restituisce l'indice dell'attributo nello schema.
-     * 
-     * @return indice dell'attributo.
+     * @return indice dell'attributo nello schema
      */
-    public int getIndex()
-    {
+    public int getIndex() {
         return index;
     }
 
     /**
-     * Restituisce una rappresentazione testuale dell'attributo.
-     * 
-     * <p>
-     * Il valore restituito corrisponde al nome dell'attributo. 
-     * </p>
-     * 
-     * @return nome dell'attributo
+     * @return rappresentazione testuale dell'attributo (il suo nome)
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 }

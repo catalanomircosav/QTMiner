@@ -1,58 +1,49 @@
 package data;
 
 /**
- * Classe che rappresenta un elemento con un attributo discreto in un dataset.
+ * Rappresenta un item associato a un {@link DiscreteAttribute}.
  * <p>
- * Un {@code DiscreteItem} estende la classe astratta {@code Item} e implementa
- * il metodo astratto {@code distance} per calcolare la distanza tra due oggetti.
- * <b>La distanza è definita come 0 se i valori sono uguali e 1 se sono diversi</b>.
+ * La distanza tra due valori discreti è definita come:
+ * <ul>
+ *     <li><b>0.0</b> se i valori sono uguali</li>
+ *     <li><b>1.0</b> se i valori sono diversi</li>
+ * </ul>
  * </p>
- * 
+ *
  * @see Item
  * @see DiscreteAttribute
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
  */
-public class DiscreteItem extends Item
-{
+public class DiscreteItem extends Item {
+
     /**
-     * Costruisce un nuovo {@code DiscreteItem} con l'attributo e il valore specificati.
-     * 
-     * @param attribute l'attributo discreto a cui l'item si riferisce
-     * @param value valore discreto riferito dall'item
+     * Costruisce un {@code DiscreteItem} con attributo e valore specificati.
+     *
+     * @param attribute attributo discreto dell'item
+     * @param value valore discreto dell'item
      */
-    public DiscreteItem(Attribute attribute, Object value)
-    {
+    public DiscreteItem(Attribute attribute, Object value) {
         super(attribute, value);
     }
 
     /**
-     * Calcola la distanza tra il valore dell'item e un altro valore discreto.
-     * <p>
-     * La distanza è definita come 0 se i valori sono uguali e 1 se sono diversi.
-     * </p>
-     * 
-     * @param other il valore discreto da cui calcolare la distanza
-     * 
-     * @throws IllegalArgumentException se il valore specificato non è dello stesso tipo del valore dell'item.
-     * @throws IllegalArgumentException se il valore specificato è {@code null}
+     * Calcola la distanza tra il valore di questo item e un altro valore discreto.
+     *
+     * @param other valore con cui calcolare la distanza
+     * @return 0.0 se i valori sono uguali, 1.0 altrimenti
+     *
+     * @throws IllegalArgumentException se {@code other} è {@code null}
      * @throws IllegalArgumentException se il valore dell'item è {@code null}
-     * 
-     * @return la distanza tra il valore dell'item e il valore specificato, compreso tra 0 e 1.
+     * @throws IllegalArgumentException se i valori non sono dello stesso tipo
      */
     @Override
-    public double distance(Object other)
-    {
-        if(other == null)
+    public double distance(Object other) {
+        if (other == null)
             throw new IllegalArgumentException("Il valore specificato non può essere null.");
-        
-        if(this.getValue() == null)
+        if (getValue() == null)
             throw new IllegalArgumentException("Il valore dell'item non può essere null.");
-        
-        if(!getValue().getClass().equals(other.getClass()))
-            throw new IllegalArgumentException("Il valore specificato deve essere dello stesso tipo del valore dell'item.");
-        
-        return (getValue().equals(other) ? 0.0 : 1.0);
+        if (!getValue().getClass().equals(other.getClass()))
+            throw new IllegalArgumentException("Il valore specificato deve essere dello stesso tipo.");
+
+        return getValue().equals(other) ? 0.0 : 1.0;
     }
 }

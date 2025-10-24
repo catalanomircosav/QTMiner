@@ -4,84 +4,63 @@ import java.io.Serializable;
 
 /**
  * Classe astratta che rappresenta un item generico di un dataset.
- * <b>Questa classe deve essere estesa per creare item specifici (es. discreti o continui)</b>
- * 
  * <p>
- * Ogni item è formato da un attributo e un valore associato a quell'attributo. 
+ * Un item è definito da un {@link Attribute} e da un valore
+ * appartenente al dominio di tale attributo. Le sottoclassi
+ * implementano il metodo {@link #distance(Object)} per definire
+ * la distanza tra valori (ad esempio 1/0 per attributi discreti,
+ * o distanza numerica scalata per quelli continui).
  * </p>
- * 
+ *
  * @see Attribute
- * 
- * @author Mirco Catalano
- * @author Lorenzo Amato
  */
-public abstract class Item implements Serializable
-{
-    /**
-     * Attrivuto riferito dall'item
-     */
+public abstract class Item implements Serializable {
+
+    /** Attributo associato all'item. */
     private final Attribute attribute;
 
-    /**
-     * Indice dell'attributo
-     */
+    /** Valore dell'item, coerente con il dominio dell'attributo. */
     private final Object value;
 
     /**
-     * Costruisce un nuovo item con il nome e l'indice specificati.
-     * 
-     * @param attributo attributo dell'item
-     * @param index valore dell'item
+     * Costruisce un nuovo item con attributo e valore specificati.
+     *
+     * @param attribute attributo di riferimento dell'item
+     * @param value     valore associato all'attributo
      */
-    protected Item(Attribute attribute, Object value)
-    {
+    protected Item(Attribute attribute, Object value) {
         this.attribute = attribute;
         this.value = value;
     }
 
     /**
-     * Restituisce l'attributo riferito dall'item.
-     * 
-     * @return l'attributo associato all'item
+     * @return l'attributo riferito dall'item
      */
-    public Attribute getAttribute()
-    {
+    public Attribute getAttribute() {
         return attribute;
     }
 
     /**
-     * Restituisce il valore riferito dall'item..
-     * 
-     * @return valore associato all'item coerente con il dominio dell'attributo
+     * @return il valore associato all'item
      */
-    public Object getValue()
-    {
+    public Object getValue() {
         return value;
     }
 
     /**
-     * Restituisce una rappresentazione testuale dell'item nella forma:
+     * Rappresentazione testuale dell'item nella forma:
      * {@code Item{attribute=..., value=...}}.
-     * 
-     * @return stringa che rappresenta l'item
      */
     @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Item{attribute=").append(attribute).
-        append(", value=").append(value).append("}");
-
-        return sb.toString();
+    public String toString() {
+        return "Item{attribute=" + attribute + ", value=" + value + "}";
     }
 
     /**
-     * Calcola la distanza tra il valore dell'item e il valore dell'oggetto di un altro {@code Item}.
-     * 
-     * @param other item di cui calcolare la distanza
-     * 
-     * @return la distanza tra {@code this.value} e {@code other}
+     * Calcola la distanza tra il valore di questo item e quello specificato.
+     *
+     * @param other valore con cui confrontare {@code this.value}
+     * @return distanza tra i due valori (definita dalle sottoclassi)
      */
-    abstract double distance(Object a);
+    public abstract double distance(Object other);
 }
