@@ -14,7 +14,7 @@ import database.TableSchema.Column;
 
 /**
  * Fornisce metodi per estrarre dati da una tabella del database,
- * quali transazioni distinte, valori distinti di colonna e valori
+ * come transazioni distinte, valori distinti di colonna e valori
  * aggregati (min/max).
  */
 public class TableData {
@@ -25,7 +25,7 @@ public class TableData {
     /**
      * Costruisce un oggetto {@code TableData} associato al database specificato.
      *
-     * @param db accesso al database già inizializzato
+     * @param db l’accesso al database già inizializzato
      */
     public TableData(DBAccess db) {
         this.db = db;
@@ -35,11 +35,10 @@ public class TableData {
      * Estrae tutte le transazioni distinte presenti nella tabella.
      * Ogni transazione è rappresentata da un {@link Example}.
      *
-     * @param table nome della tabella
-     * @return lista di transazioni distinte
-     *
+     * @param table il nome della tabella
+     * @return la lista di transazioni distinte
      * @throws SQLException se la query fallisce
-     * @throws EmptySetException se la tabella è vuota
+     * @throws EmptySetException se la tabella non contiene transazioni
      */
     public List<Example> getDistinctTransactions(String table) throws SQLException, EmptySetException {
         LinkedList<Example> transSet = new LinkedList<>();
@@ -86,10 +85,9 @@ public class TableData {
     /**
      * Estrae i valori distinti e ordinati della colonna specificata.
      *
-     * @param table nome della tabella
-     * @param column colonna della quale estrarre i valori
-     * @return insieme ordinato dei valori distinti
-     *
+     * @param table il nome della tabella
+     * @param column la colonna della quale estrarre i valori distinti
+     * @return l’insieme ordinato dei valori distinti
      * @throws SQLException se la query fallisce
      */
     public Set<Object> getDistinctColumnValues(String table, Column column) throws SQLException {
@@ -116,14 +114,12 @@ public class TableData {
     /**
      * Calcola il valore minimo o massimo di una colonna.
      *
-     * @param table nome della tabella
-     * @param column colonna su cui effettuare l’aggregazione
-     * @param aggregate tipo di aggregazione (MIN o MAX)
-     *
-     * @return valore minimo o massimo trovato
-     *
+     * @param table il nome della tabella
+     * @param column la colonna su cui effettuare l’aggregazione
+     * @param aggregate il tipo di aggregazione (MIN o MAX)
+     * @return il valore minimo o massimo trovato
      * @throws SQLException se la query fallisce
-     * @throws NoValueException se non esistono valori validi
+     * @throws NoValueException se non esistono valori validi per la colonna
      */
     public Object getAggregateColumnValue(String table, Column column, QUERY_TYPE aggregate)
             throws SQLException, NoValueException {

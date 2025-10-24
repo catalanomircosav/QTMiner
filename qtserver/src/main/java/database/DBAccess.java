@@ -10,7 +10,8 @@ import exceptions.DatabaseConnectionException;
  * Gestisce la connessione a un database MySQL tramite JDBC.
  * <p>
  * Fornisce metodi per inizializzare, ottenere e chiudere una connessione
- * verso un DB MySQL basato sui parametri configurati internamente.
+ * verso un DB MySQL basandosi sui parametri configurati internamente
+ * (driver, host, porta e credenziali).
  * </p>
  *
  * @see Connection
@@ -43,16 +44,15 @@ public class DBAccess {
 
     /**
      * Costruisce un oggetto {@code DBAccess} senza aprire la connessione.
-     * Per stabilirla, invocare {@link #initConnection()}.
+     * Per stabilirla, invocare il metodo {@link #initConnection()}.
      */
     public DBAccess() { }
 
     /**
-     * Inizializza la connessione al database.
+     * Inizializza la connessione al database MySQL utilizzando i parametri configurati.
      *
-     * @throws SQLException se si verifica un errore lato JDBC
-     * @throws DatabaseConnectionException se il driver non è disponibile
-     *                                     o la connessione non può essere stabilita
+     * @throws SQLException se si verifica un errore lato JDBC durante la creazione della connessione
+     * @throws DatabaseConnectionException se il driver non è disponibile o la connessione non può essere stabilita
      */
     public void initConnection() throws SQLException, DatabaseConnectionException {
         try {
@@ -74,18 +74,18 @@ public class DBAccess {
     }
 
     /**
-     * Restituisce la connessione attiva.
+     * Restituisce la connessione JDBC attualmente attiva.
      *
-     * @return la connessione, oppure {@code null} se non inizializzata
+     * @return la connessione, oppure {@code null} se non è stata inizializzata
      */
     public Connection getConnection() {
         return conn;
     }
 
     /**
-     * Chiude la connessione al database, se aperta.
+     * Chiude la connessione al database, se attualmente aperta.
      *
-     * @throws SQLException se si verifica un errore in chiusura
+     * @throws SQLException se si verifica un errore durante la chiusura
      */
     public void closeConnection() throws SQLException {
         if (conn != null && !conn.isClosed()) {

@@ -17,28 +17,32 @@ import exceptions.EmptySetException;
 import exceptions.NoValueException;
 
 /**
- * Rappresenta un dataset composto da una lista di esempi (righe)
- * e una lista di attributi (colonne).
+ * Rappresenta un dataset composto da una lista di esempi (righe) e da una lista
+ * di attributi (colonne) estratti da una tabella del database.
+ * <p>
+ * La classe fornisce metodi per accedere ai valori grezzi del dataset e per
+ * ottenere tuple di {@link Item}, consentendo così successive elaborazioni
+ * (es. clustering).
+ * </p>
  */
 public class Data {
 
     /** Lista degli esempi (righe del dataset). */
     private final List<Example> data = new ArrayList<>();
 
-    /** Lista degli attributi dello schema. */
+    /** Lista degli attributi dello schema (colonne del dataset). */
     private final List<Attribute> attributeSet = new ArrayList<>();
 
     /** Numero totale di esempi nel dataset. */
     private int numberOfExamples;
 
     /**
-     * Costruisce un dataset a partire da una tabella del database.
+     * Costruisce un dataset a partire dal contenuto di una tabella del database.
      *
-     * @param tableName nome della tabella
-     *
-     * @throws DatabaseConnectionException se non è possibile connettersi
-     * @throws EmptyDatasetException se la tabella è vuota
-     * @throws SQLException se avvengono errori SQL
+     * @param tableName il nome della tabella da cui leggere i dati
+     * @throws DatabaseConnectionException se non è possibile stabilire la connessione al database
+     * @throws EmptyDatasetException       se la tabella non contiene alcuna riga
+     * @throws SQLException                se si verificano errori SQL durante lettura o chiusura connessione
      */
     public Data(String tableName)
             throws DatabaseConnectionException, EmptyDatasetException, SQLException {
@@ -74,29 +78,40 @@ public class Data {
         }
     }
 
-    /** @return numero di esempi nel dataset */
+    /**
+     * Restituisce il numero di esempi presenti nel dataset.
+     *
+     * @return il numero di esempi
+     */
     public int getNumberOfExamples() {
         return numberOfExamples;
     }
 
-    /** @return numero di attributi nel dataset */
+    /**
+     * Restituisce il numero di attributi dello schema del dataset.
+     *
+     * @return il numero di attributi
+     */
     public int getNumberOfAttributes() {
         return attributeSet.size();
     }
 
-    /** @return array degli attributi */
+    /**
+     * Restituisce l'intero schema degli attributi del dataset.
+     *
+     * @return un array contenente tutti gli attributi
+     */
     public Attribute[] getAttributeSchema() {
         return attributeSet.toArray(new Attribute[0]);
     }
 
     /**
-     * Restituisce il valore (grezzo) di una cella del dataset.
+     * Restituisce il valore grezzo di una cella del dataset, specificata tramite
+     * indici di esempio e attributo.
      *
-     * @param exampleIndex indice dell'esempio
-     * @param attributeIndex indice dell'attributo
-     *
-     * @return il valore della cella
-     *
+     * @param exampleIndex   indice dell'esempio (riga)
+     * @param attributeIndex indice dell'attributo (colonna)
+     * @return il valore corrispondente nella cella indicata
      * @throws ArrayIndexOutOfBoundsException se gli indici non sono validi
      */
     public Object getValue(int exampleIndex, int attributeIndex) {
@@ -108,10 +123,11 @@ public class Data {
     }
 
     /**
-     * Restituisce una tupla (insieme di Item) dell'esempio indicato.
+     * Restituisce una tupla di {@link Item} contenente i valori dell’esempio
+     * specificato.
      *
-     * @param index indice dell'esempio
-     * @return tupla corrispondente
+     * @param index l’indice dell’esempio di cui creare la tupla
+     * @return la tupla corrispondente all’esempio
      */
     public Tuple getItemSet(int index) {
         Tuple tuple = new Tuple(attributeSet.size());
@@ -127,17 +143,21 @@ public class Data {
         return tuple;
     }
 
+    /**
+     * Restituisce una rappresentazione testuale del dataset, comprensiva
+     * dell’intestazione e di tutte le righe di dati.
+     *
+     * @return stringa rappresentativa del dataset
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        // intestazione
         for (Attribute attr : attributeSet)
             sb.append(attr.toString()).append(", ");
         sb.setLength(sb.length() - 2);
         sb.append("\n");
 
-        // righe
         for (int i = 0; i < numberOfExamples; i++) {
             sb.append(i).append(": ");
             for (int j = 0; j < attributeSet.size(); j++)
@@ -150,7 +170,15 @@ public class Data {
     }
 
     /**
-     * Crea gli attributi a partire dallo schema della tabella.
+     * Crea gli attributi del dataset analizzando lo schema della tabella
+     * del database. Gli attributi numerici vengono mappati su
+     * {@link ContinuousAttribute}, mentre gli attributi non numerici su
+     * {@link DiscreteAttribute}.
+     *
+     * @param tableName  il nome della tabella
+     * @param database   l’accesso al database
+     * @param tableSchema lo schema della tabella
+     * @throws SQLException se si verificano errori SQL durante la lettura
      */
     private void createAttributesFromTableSchema(String tableName, DBAccess database, TableSchema tableSchema)
             throws SQLException {

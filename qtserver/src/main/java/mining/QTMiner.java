@@ -13,35 +13,33 @@ import java.io.FileNotFoundException;
 import exceptions.ClusteringRadiusException;
 
 /**
- * La classe {@code QTMiner} implementa l'algoritmo di clustering QT
- * (Quality Threshold), che raggruppa i dati in cluster in base ad un
- * raggio massimo assegnato.
- *
- * L'algoritmo costruisce, per ogni punto, un cluster candidato e ne
- * seleziona ogni volta il più popoloso finché tutti i dati risultano
- * assegnati.
+ * La classe {@code QTMiner} implementa l'algoritmo di clustering
+ * QT (Quality Threshold), che raggruppa i dati in cluster in base
+ * a un raggio massimo assegnato.
+ * <p>
+ * L’algoritmo costruisce, per ogni tupla del dataset, un cluster
+ * candidato includendo tutte le tuple entro la distanza stabilita,
+ * quindi seleziona quello più popoloso. Tale procedura viene
+ * ripetuta finché tutte le tuple risultano assegnate.
+ * </p>
  *
  * @see Data
  * @see Tuple
  * @see Cluster
  * @see ClusterSet
- *
- * 
- * 
  */
 public class QTMiner {
 
     /** Insieme dei cluster prodotti dall'algoritmo. */
     private ClusterSet C;
 
-    /** Raggio massimo entro cui i punti possono appartenere allo stesso cluster. */
+    /** Raggio massimo entro cui le tuple possono appartenere allo stesso cluster. */
     private double radius;
 
     /**
      * Costruisce un nuovo {@code QTMiner} specificando il raggio di clustering.
      *
-     * @param radius raggio massimo; deve essere positivo
-     *
+     * @param radius il raggio massimo; deve essere positivo
      * @throws IllegalArgumentException se {@code radius <= 0}
      */
     public QTMiner(double radius) {
@@ -53,20 +51,18 @@ public class QTMiner {
     }
 
     /**
-     * Costruisce un {@code QTMiner} leggendo un {@link ClusterSet} da file.
+     * Costruisce un {@code QTMiner} leggendo un {@link ClusterSet} serializzato da file.
      *
-     * @param filename percorso del file da cui leggere l'oggetto serializzato
-     *
+     * @param filename il percorso del file da cui leggere l’oggetto serializzato
      * @throws FileNotFoundException    se il file non esiste
      * @throws IOException              se avviene un errore durante la lettura
-     * @throws ClassNotFoundException   se l'oggetto nel file non corrisponde alla classe attesa
+     * @throws ClassNotFoundException   se l’oggetto nel file non è compatibile
      */
     public QTMiner(String filename)
             throws FileNotFoundException, IOException, ClassNotFoundException {
 
         try (ObjectInputStream in =
                      new ObjectInputStream(new FileInputStream(filename))) {
-
             this.C = (ClusterSet) in.readObject();
         }
     }
@@ -74,10 +70,9 @@ public class QTMiner {
     /**
      * Serializza e salva su file il {@link ClusterSet} corrente.
      *
-     * @param filename percorso del file di destinazione
-     *
-     * @throws FileNotFoundException    se il file non può essere creato
-     * @throws IOException              se avviene un errore in scrittura
+     * @param filename il percorso del file di destinazione
+     * @throws FileNotFoundException se il file non può essere creato
+     * @throws IOException           se avviene un errore in scrittura
      */
     public void salva(String filename) throws FileNotFoundException, IOException {
         try (ObjectOutputStream out =
@@ -96,13 +91,11 @@ public class QTMiner {
     }
 
     /**
-     * Esegue l'algoritmo QT sul dataset fornito.
+     * Esegue l’algoritmo QT sul dataset fornito, producendo e memorizzando i cluster.
      *
      * @param data il dataset su cui eseguire il clustering
-     *
      * @return il numero di cluster generati
-     *
-     * @throws ClusteringRadiusException    se l'algoritmo produce un solo cluster
+     * @throws ClusteringRadiusException se l’algoritmo produce un unico cluster
      */
     public int compute(Data data) throws ClusteringRadiusException {
         int numclusters = 0;
@@ -128,13 +121,13 @@ public class QTMiner {
     }
 
     /**
-     * Costruisce e restituisce il cluster candidato più popoloso, scegliendo
-     * come centro una tupla non ancora assegnata.
+     * Costruisce e restituisce il cluster candidato più popoloso per il
+     * prossimo passo dell’algoritmo, scegliendo come centro la prima tupla
+     * disponibile non ancora assegnata.
      *
      * @param data        il dataset di riferimento
      * @param isClustered array booleano che indica quali tuple sono già assegnate
-     *
-     * @return il cluster candidato con la maggiore cardinalità
+     * @return il cluster candidato con la cardinalità massima
      */
     public Cluster buildCandidateCluster(Data data, boolean[] isClustered) {
         Cluster best = null;

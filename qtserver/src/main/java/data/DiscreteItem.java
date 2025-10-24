@@ -4,11 +4,11 @@ package data;
  * Rappresenta un item associato a un {@link DiscreteAttribute}.
  * <p>
  * La distanza tra due valori discreti è definita come:
+ * </p>
  * <ul>
  *     <li><b>0.0</b> se i valori sono uguali</li>
  *     <li><b>1.0</b> se i valori sono diversi</li>
  * </ul>
- * </p>
  *
  * @see Item
  * @see DiscreteAttribute
@@ -16,10 +16,10 @@ package data;
 public class DiscreteItem extends Item {
 
     /**
-     * Costruisce un {@code DiscreteItem} con attributo e valore specificati.
+     * Costruisce un {@code DiscreteItem} specificando attributo e valore discreto associato.
      *
-     * @param attribute attributo discreto dell'item
-     * @param value valore discreto dell'item
+     * @param attribute l’attributo discreto dell’item
+     * @param value     il valore discreto dell’item
      */
     public DiscreteItem(Attribute attribute, Object value) {
         super(attribute, value);
@@ -27,13 +27,16 @@ public class DiscreteItem extends Item {
 
     /**
      * Calcola la distanza tra il valore di questo item e un altro valore discreto.
+     * <p>
+     * La distanza assume valore {@code 0.0} se i valori coincidono,
+     * oppure {@code 1.0} in caso contrario.
+     * </p>
      *
-     * @param other valore con cui calcolare la distanza
-     * @return 0.0 se i valori sono uguali, 1.0 altrimenti
-     *
+     * @param other il valore con cui calcolare la distanza
+     * @return {@code 0.0} se i valori sono uguali, {@code 1.0} altrimenti
      * @throws IllegalArgumentException se {@code other} è {@code null}
-     * @throws IllegalArgumentException se il valore dell'item è {@code null}
-     * @throws IllegalArgumentException se i valori non sono dello stesso tipo
+     * @throws IllegalArgumentException se il valore dell’item è {@code null}
+     * @throws IllegalArgumentException se {@code other} non è dello stesso tipo del valore memorizzato
      */
     @Override
     public double distance(Object other) {

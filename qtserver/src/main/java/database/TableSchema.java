@@ -13,7 +13,7 @@ import java.sql.DatabaseMetaData;
  * <p>
  * Questa classe estrae i metadati della tabella tramite JDBC e converte
  * i tipi SQL in tipologie semplificate utilizzate all'interno
- * dell'applicazione ("number" o "string").
+ * dell'applicazione (ad esempio {@code "number"} o {@code "string"}).
  * </p>
  *
  * @see Column
@@ -22,20 +22,24 @@ public class TableSchema {
 
     /**
      * Rappresenta una singola colonna dello schema della tabella.
+     * <p>
+     * Ogni colonna è descritta dal nome e da un tipo semplificato che
+     * indica se i valori sono numerici o testuali.
+     * </p>
      */
     public class Column {
 
         /** Nome della colonna. */
         private final String name;
 
-        /** Tipo semplificato ("number" o "string"). */
+        /** Tipo semplificato associato alla colonna ({@code "number"} o {@code "string"}). */
         private final String type;
 
         /**
-         * Costruisce una colonna dello schema.
+         * Costruisce una colonna dello schema specificando nome e tipo.
          *
-         * @param name nome della colonna
-         * @param type tipo semplificato ("number" o "string")
+         * @param name il nome della colonna
+         * @param type il tipo semplificato ({@code "number"} o {@code "string"})
          */
         Column(String name, String type) {
             this.name = name;
@@ -43,6 +47,8 @@ public class TableSchema {
         }
 
         /**
+         * Restituisce il nome della colonna.
+         *
          * @return il nome della colonna
          */
         public String getColumnName() {
@@ -50,14 +56,18 @@ public class TableSchema {
         }
 
         /**
-         * @return {@code true} se la colonna contiene valori numerici
+         * Verifica se la colonna contiene valori numerici.
+         *
+         * @return {@code true} se i valori della colonna sono numerici, {@code false} altrimenti
          */
         public boolean isNumber() {
             return type.equals("number");
         }
 
         /**
-         * @return una rappresentazione testuale della colonna
+         * Restituisce una rappresentazione testuale della colonna.
+         *
+         * @return una stringa contenente nome e tipo della colonna
          */
         @Override
         public String toString() {
@@ -69,12 +79,11 @@ public class TableSchema {
     private final List<Column> tableSchema = new ArrayList<>();
 
     /**
-     * Costruisce lo schema della tabella specificata interrogando il database.
+     * Costruisce lo schema della tabella interrogando i metadati del database tramite JDBC.
      *
-     * @param db accesso al database già connesso
-     * @param tableName nome della tabella della quale estrarre lo schema
-     *
-     * @throws SQLException se si verificano errori durante l'accesso ai metadati
+     * @param db        l’accesso al database già connesso
+     * @param tableName il nome della tabella della quale estrarre lo schema
+     * @throws SQLException se si verificano errori durante l’accesso ai metadati
      */
     public TableSchema(DBAccess db, String tableName) throws SQLException {
 
@@ -107,6 +116,8 @@ public class TableSchema {
     }
 
     /**
+     * Restituisce il numero di colonne che compongono lo schema della tabella.
+     *
      * @return il numero di colonne nello schema
      */
     public int getNumberOfAttributes() {
@@ -116,8 +127,9 @@ public class TableSchema {
     /**
      * Restituisce la colonna alla posizione indicata.
      *
-     * @param index indice della colonna
+     * @param index l’indice della colonna richiesta
      * @return la colonna corrispondente
+     * @throws IndexOutOfBoundsException se {@code index} non è valido
      */
     public Column getColumn(int index) {
         return tableSchema.get(index);

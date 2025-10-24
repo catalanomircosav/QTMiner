@@ -7,8 +7,9 @@ import java.util.Set;
  * Rappresenta una tupla di un dataset, composta da un insieme ordinato di {@link Item}.
  * <p>
  * Fornisce metodi per accedere agli item e per calcolare:
+ * </p>
  * <ul>
- *     <li>la distanza tra due tuple</li>
+ *     <li>la distanza totale rispetto a un'altra tupla</li>
  *     <li>la distanza media rispetto a un insieme di tuple</li>
  * </ul>
  */
@@ -18,9 +19,9 @@ public class Tuple implements Serializable {
     private final Item[] tuple;
 
     /**
-     * Costruisce una tupla vuota di dimensione specificata.
+     * Costruisce una tupla vuota della dimensione specificata.
      *
-     * @param size numero di item della tupla (deve essere > 0)
+     * @param size il numero di item della tupla (deve essere maggiore di zero)
      * @throws IllegalArgumentException se {@code size <= 0}
      */
     public Tuple(int size) {
@@ -30,18 +31,20 @@ public class Tuple implements Serializable {
     }
 
     /**
-     * @return numero di item nella tupla
+     * Restituisce il numero di item presenti nella tupla.
+     *
+     * @return il numero di item
      */
     public int getLength() {
         return tuple.length;
     }
 
     /**
-     * Restituisce l'item all'indice indicato.
+     * Restituisce l'item situato nella posizione indicata.
      *
-     * @param i indice dell'item
-     * @return l'item all'indice {@code i}
-     * @throws ArrayIndexOutOfBoundsException se {@code i} non è valido
+     * @param i l’indice dell’item da restituire
+     * @return l'item corrispondente
+     * @throws ArrayIndexOutOfBoundsException se l’indice non è compreso nei limiti validi
      */
     public Item get(int i) {
         if (i < 0 || i >= tuple.length)
@@ -50,11 +53,11 @@ public class Tuple implements Serializable {
     }
 
     /**
-     * Inserisce un item nella tupla all'indice indicato.
+     * Inserisce un item nella posizione indicata della tupla.
      *
-     * @param item item da inserire
-     * @param i indice della posizione
-     * @throws IndexOutOfBoundsException se {@code i} non è valido
+     * @param item l’item da inserire
+     * @param i    l’indice della posizione
+     * @throws IndexOutOfBoundsException se l’indice non è valido
      */
     public void add(Item item, int i) {
         if (i < 0 || i >= tuple.length)
@@ -63,16 +66,14 @@ public class Tuple implements Serializable {
     }
 
     /**
-     * Calcola la distanza tra questa tupla e un'altra tupla di pari dimensioni.
+     * Calcola la distanza tra questa tupla e un'altra tupla della stessa dimensione.
      * <p>
-     * La distanza è la somma delle distanze tra i singoli item corrispondenti.
+     * La distanza complessiva è ottenuta sommando le distanze tra gli item corrispondenti.
      * </p>
      *
-     * @param other tupla da confrontare
-     * @return distanza totale
-     *
-     * @throws IllegalArgumentException se {@code other} è {@code null}
-     * @throws IllegalArgumentException se le tuple hanno lunghezze diverse
+     * @param other la tupla con cui confrontare questa tupla
+     * @return la distanza totale tra le due tuple
+     * @throws IllegalArgumentException se {@code other} è {@code null} o ha dimensione diversa
      */
     public double getDistance(Tuple other) {
         if (other == null)
@@ -88,12 +89,12 @@ public class Tuple implements Serializable {
     }
 
     /**
-     * Calcola la distanza media tra questa tupla e un insieme di tuple.
+     * Calcola la distanza media tra questa tupla e un insieme di tuple
+     * appartenenti a un dataset.
      *
-     * @param data dataset da cui prelevare gli esempi
-     * @param clusteredData indici delle tuple del dataset da confrontare
-     * @return distanza media
-     *
+     * @param data          il dataset contenente le tuple
+     * @param clusteredData l’insieme degli indici delle tuple da confrontare
+     * @return la distanza media rispetto all’insieme specificato
      * @throws IllegalArgumentException se {@code clusteredData} è {@code null} o vuoto
      */
     public double avgDistance(Data data, Set<Integer> clusteredData) {

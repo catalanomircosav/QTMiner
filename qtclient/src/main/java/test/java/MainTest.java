@@ -10,18 +10,18 @@ import keyboardinput.Keyboard;
 
 /**
  * Client di test per la connessione verso un server remoto.
- * Gestisce tramite socket diverse operazioni richieste dal menu, come:
+ * <p>
+ * Consente di richiedere al server diverse operazioni tramite menu, tra cui:
+ * </p>
  * <ul>
- *   <li>Caricare una tabella dal DB</li>
- *   <li>Computare i cluster dai dati caricati dal DB</li>
+ *   <li>Caricare una tabella dal database</li>
+ *   <li>Computare i cluster dai dati presenti nel database</li>
  *   <li>Salvare i cluster su file</li>
  *   <li>Computare i cluster da file</li>
  * </ul>
- * 
- * Il protocollo di comunicazione è basato su {@link ObjectInputStream} e {@link ObjectOutputStream}.
- * 
- * 
- * 
+ * <p>
+ * La comunicazione avviene tramite {@link ObjectInputStream} e {@link ObjectOutputStream}.
+ * </p>
  */
 public class MainTest {
 
@@ -32,11 +32,10 @@ public class MainTest {
     private ObjectInputStream in;
 
     /**
-     * Costruisce un client e apre una connessione verso il server specificato.
+     * Costruisce il client e apre una connessione verso il server specificato.
      *
-     * @param ip    indirizzo IP del server
-     * @param port  porta su cui il server è in ascolto
-     * 
+     * @param ip   l’indirizzo IP del server
+     * @param port la porta su cui il server è in ascolto
      * @throws IOException se fallisce la connessione o la creazione degli stream
      */
     public MainTest(String ip, int port) throws IOException {
@@ -51,9 +50,9 @@ public class MainTest {
     }
 
     /**
-     * Mostra il menu e invia la scelta al server.
+     * Mostra il menu delle operazioni disponibili e invia al server la scelta effettuata dall’utente.
      *
-     * @return intero corrispondente alla scelta dell’utente (0–3)
+     * @return un intero compreso tra 0 e 3 che rappresenta la scelta effettuata
      */
     private int menu() {
         int answer = 1;
@@ -80,7 +79,7 @@ public class MainTest {
     }
 
     /**
-     * Opzione (0): Carica una tabella dal DB tramite nome tabella.
+     * Opzione (0): Carica una tabella dal database tramite nome tabella.
      *
      * @throws SocketException        se si verifica un errore di rete
      * @throws ServerException        se il server restituisce un errore
@@ -102,20 +101,18 @@ public class MainTest {
     }
 
     /**
-     * Opzione (1): Computa i cluster leggendo i dati da DB.
+     * Opzione (1): Computa i cluster leggendo i dati dal database.
      *
-     * @return stringa contenente il ClusterSet
-     * 
-     * @throws SocketException          se si verifica un errore di rete
-     * @throws ServerException          se il server restituisce un errore
-     * @throws IOException              se fallisce la comunicazione
-     * @throws ClassNotFoundException   se la risposta non è deserializzabile
+     * @return una stringa contenente il {@code ClusterSet} prodotto
+     * @throws SocketException        se si verifica un errore di rete
+     * @throws ServerException        se il server restituisce un errore
+     * @throws IOException            se fallisce la comunicazione
+     * @throws ClassNotFoundException se la risposta non è deserializzabile
      */
     private String learningFromDbTable()
             throws SocketException, ServerException, IOException, ClassNotFoundException {
         double r;
-        do
-        {
+        do {
             System.out.print("Radius: ");
             r = Keyboard.readDouble();
         } while (r <= 0);
@@ -124,21 +121,20 @@ public class MainTest {
         out.flush();
 
         String result = (String) in.readObject();
-        if (result.equals("OK"))
-        {
+        if (result.equals("OK")) {
             System.out.println("Number of Clusters: " + in.readObject());
             return (String) in.readObject();
-        }
-        else throw new ServerException(result);
+        } else
+            throw new ServerException(result);
     }
 
     /**
-     * Opzione (2): Salva i cluster in un file.
+     * Opzione (2): Salva i cluster su file.
      *
-     * @throws SocketException          se si verifica un errore di rete
-     * @throws ServerException          se il server restituisce un errore
-     * @throws IOException              se fallisce la comunicazione
-     * @throws ClassNotFoundException   se la risposta non è deserializzabile
+     * @throws SocketException        se si verifica un errore di rete
+     * @throws ServerException        se il server restituisce un errore
+     * @throws IOException            se fallisce la comunicazione
+     * @throws ClassNotFoundException se la risposta non è deserializzabile
      */
     private void storeClusterInFile()
             throws SocketException, ServerException, IOException, ClassNotFoundException {
@@ -148,14 +144,13 @@ public class MainTest {
     }
 
     /**
-     * Opzione (3): Computa cluster leggendo i dati da file.
+     * Opzione (3): Computa i cluster leggendo i dati da file.
      *
-     * @return stringa contenente il ClusterSet
-     * 
-     * @throws SocketException          se si verifica un errore di rete
-     * @throws ServerException          se il server restituisce un errore
-     * @throws IOException              se fallisce la comunicazione
-     * @throws ClassNotFoundException   se la risposta non è deserializzabile
+     * @return una stringa contenente il {@code ClusterSet} prodotto
+     * @throws SocketException        se si verifica un errore di rete
+     * @throws ServerException        se il server restituisce un errore
+     * @throws IOException            se fallisce la comunicazione
+     * @throws ClassNotFoundException se la risposta non è deserializzabile
      */
     private String learningfromFile()
             throws SocketException, ServerException, IOException, ClassNotFoundException {
@@ -169,13 +164,14 @@ public class MainTest {
         String result = (String) in.readObject();
         if (result.equals("OK"))
             return (String) in.readObject();
-        else throw new ServerException(result);
+        else
+            throw new ServerException(result);
     }
 
     /**
-     * Avvia il programma client.
+     * Avvia il client e gestisce il flusso delle richieste verso il server.
      *
-     * @param args <ip> <porta>
+     * @param args i parametri da linea di comando: indirizzo IP e porta
      */
     public static void main(String[] args) {
         if (args.length < 2) {
@@ -189,8 +185,7 @@ public class MainTest {
 
         try {
             main = new MainTest(ip, port);
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             System.err.println(exception.getMessage());
             return;
         }
@@ -202,28 +197,23 @@ public class MainTest {
                     case 0:
                         main.storeTableFromDb();
                         break;
-
                     case 1:
                         System.out.println("Cluster dal database:");
                         System.out.println(main.learningFromDbTable());
                         break;
-
                     case 2:
                         main.storeClusterInFile();
                         System.out.println("Cluster salvati in file con successo");
                         break;
-
                     case 3:
                         System.out.println("Cluster dal file:");
                         System.out.println(main.learningfromFile());
                         break;
-
                     default:
                         System.out.println("Opzione non valida!");
                         break;
                 }
-            } 
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.err.println("Errore: " + e.getMessage());
             }
 
@@ -234,8 +224,7 @@ public class MainTest {
         try {
             main.out.close();
             main.in.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Errore chiusura connessione: " + e.getMessage());
         }
     }

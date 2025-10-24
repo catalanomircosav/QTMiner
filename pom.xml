@@ -10,6 +10,8 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
+    <name>QT Project</name>
+
     <modules>
         <module>qtclient</module>
         <module>qtserver</module>
@@ -34,4 +36,47 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <!-- COMPILAZIONE -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>25</release>
+                </configuration>
+            </plugin>
+
+            <!-- JAVADOC UNICO -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>true</failOnError>
+                            <doctitle>QTMiner API Documentation</doctitle>
+                            <windowtitle>QTMiner API</windowtitle>
+                            <groups>
+                                <group>
+                                    <title>QT_Client</title>
+                                    <packages>keyboardinput.*:test.java.*</packages>
+                                </group>
+                                <group>
+                                    <title>QT_Server</title>
+                                    <packages>data.*:database.*:mining.*:server.*</packages>
+                                </group>
+                            </groups>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

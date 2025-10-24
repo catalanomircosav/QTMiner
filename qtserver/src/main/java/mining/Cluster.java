@@ -9,23 +9,18 @@ import data.Data;
 import data.Tuple;
 
 /**
- * Rappresenta un singolo cluster prodotto da un algoritmo di clustering QT.
+ * Rappresenta un singolo cluster prodotto dall’algoritmo di clustering QT (Quality Threshold).
  * <p>
- * Ogni cluster è identificato da una {@link Tuple} che funge da centroide
- * e da un insieme di indici che puntano alle tuple del dataset assegnate
- * a tale cluster.
+ * Ogni cluster è identificato da un {@link Tuple} che funge da centroide e da un insieme
+ * di indici che rappresentano le tuple del dataset appartenenti al cluster.
+ * I riferimenti alle tuple sono memorizzati in un {@link HashSet} per evitare duplicati
+ * e garantire inserimenti e ricerche efficienti.
  * </p>
- *
- * Il contenuto è gestito tramite un {@link HashSet}, così da:
- * <ul>
- *   <li>evitare duplicati</li>
- *   <li>avere inserimenti/ricerche veloci</li>
- * </ul>
  *
  * @see ClusterSet
  * @see QTMiner
  */
-class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
+public class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
 
     /** Centroide del cluster. */
     private final Tuple centroid;
@@ -36,7 +31,7 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     /**
      * Costruisce un cluster vuoto con il centroide specificato.
      *
-     * @param centroid la tupla che rappresenta il centroide
+     * @param centroid la tupla che rappresenta il centroide del cluster
      */
     Cluster(Tuple centroid) {
         this.centroid = centroid;
@@ -53,10 +48,10 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Aggiunge un indice di tupla al cluster.
+     * Aggiunge una tupla al cluster tramite il suo indice.
      *
-     * @param id l’indice della tupla
-     * @return {@code true} se la tupla è stata inserita,
+     * @param id l’indice della tupla nel dataset
+     * @return {@code true} se l’indice è stato aggiunto,
      *         {@code false} se era già presente
      */
     public boolean addData(int id) {
@@ -64,7 +59,7 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Verifica se una tupla è assegnata al cluster.
+     * Verifica se il cluster contiene la tupla indicata.
      *
      * @param id l’indice della tupla
      * @return {@code true} se la tupla appartiene al cluster
@@ -74,7 +69,7 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Rimuove una tupla dal cluster.
+     * Rimuove la tupla dal cluster, se presente.
      *
      * @param id l’indice della tupla da rimuovere
      */
@@ -83,16 +78,18 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Restituisce il numero di tuple assegnate.
+     * Restituisce il numero di tuple assegnate al cluster.
      *
-     * @return cardinalità del cluster
+     * @return la cardinalità del cluster
      */
     public int getSize() {
         return clusteredData.size();
     }
 
     /**
-     * Restituisce un iteratore sugli indici delle tuple contenute.
+     * Restituisce un iteratore sugli indici delle tuple contenute nel cluster.
+     *
+     * @return l’iteratore sugli indici
      */
     @Override
     public Iterator<Integer> iterator() {
@@ -100,9 +97,14 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Confronta questo cluster con un altro in base alla loro dimensione.
-     * In caso di dimensione uguale, usa l’hashCode per evitare ambiguità
-     * nel {@link java.util.TreeSet}.
+     * Confronta questo cluster con un altro cluster in base alla dimensione.
+     * <p>
+     * In caso di dimensione uguale, viene confrontato l’hashCode per evitare ambiguità
+     * nelle strutture dati ordinate, come {@link java.util.TreeSet}.
+     * </p>
+     *
+     * @param other il cluster da confrontare
+     * @return un valore negativo, zero o positivo in base al confronto
      */
     @Override
     public int compareTo(Cluster other) {
@@ -110,6 +112,12 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
         return (cmp != 0) ? cmp : Integer.compare(this.hashCode(), other.hashCode());
     }
 
+    /**
+     * Restituisce una descrizione sintetica del cluster,
+     * riportando centroide e dimensione.
+     *
+     * @return una stringa riassuntiva del cluster
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Centroid=(");
@@ -125,10 +133,11 @@ class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializable {
     }
 
     /**
-     * Restituisce una rappresentazione dettagliata del cluster rispetto al dataset.
+     * Restituisce una rappresentazione dettagliata del cluster,
+     * includendo le tuple del dataset e le distanze rispetto al centroide.
      *
      * @param data il dataset da cui provengono gli indici del cluster
-     * @return una stringa descrittiva del cluster
+     * @return una stringa dettagliata con valori, distanze e distanza media
      */
     public String toString(Data data) {
         StringBuilder sb = new StringBuilder();

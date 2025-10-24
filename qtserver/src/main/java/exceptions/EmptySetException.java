@@ -13,14 +13,14 @@ public class EmptySetException extends Exception {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Costruisce l'eccezione con un messaggio predefinito.
+     * Costruisce l'eccezione con un messaggio di default.
      */
     public EmptySetException() {
         super("Il result set è vuoto.");
     }
 
     /**
-     * Costruisce l'eccezione con un messaggio personalizzato.
+     * Costruisce l'eccezione specificando un messaggio personalizzato.
      *
      * @param message il messaggio descrittivo dell'errore
      */

@@ -9,13 +9,13 @@ import data.Data;
 
 /**
  * La classe {@code ClusterSet} rappresenta una collezione di {@link Cluster}
- * memorizzati in un {@link TreeSet}. Questo garantisce:
+ * memorizzati in un {@link TreeSet}. Questa struttura garantisce:
  * <ul>
  *     <li>assenza di duplicati</li>
- *     <li>ordine deterministico dei cluster tramite ordinamento naturale</li>
+ *     <li>ordinamento deterministico dei cluster tramite ordinamento naturale</li>
  * </ul>
  *
- * Viene utilizzata dall’algoritmo QT (Quality Threshold) per memorizzare
+ * È utilizzata dall’algoritmo QT (Quality Threshold) per memorizzare
  * i cluster generati durante il processo di clustering.
  *
  * @see Cluster
@@ -32,15 +32,14 @@ public class ClusterSet implements Iterable<Cluster>, Serializable {
     public ClusterSet() { }
 
     /**
-     * Aggiunge un nuovo {@link Cluster} all'insieme.
+     * Aggiunge un nuovo {@link Cluster} all’insieme.
      *
      * @param c il cluster da aggiungere; non deve essere {@code null}
-     * @throws NullPointerException se {@code c == null}
+     * @throws NullPointerException se {@code c} è {@code null}
      */
     public void add(Cluster c) {
         if (c == null)
             throw new NullPointerException("Impossibile aggiungere un cluster null al ClusterSet.");
-            
         C.add(c);
     }
 
@@ -55,9 +54,10 @@ public class ClusterSet implements Iterable<Cluster>, Serializable {
     }
 
     /**
-     * Restituisce una rappresentazione testuale compatta del set di cluster.
+     * Restituisce una rappresentazione testuale compatta del set di cluster,
+     * elencando i cluster uno per riga con indice progressivo.
      *
-     * @return una stringa con i cluster numerati (uno per riga)
+     * @return una stringa con i cluster numerati
      */
     @Override
     public String toString() {
@@ -72,9 +72,8 @@ public class ClusterSet implements Iterable<Cluster>, Serializable {
 
     /**
      * Restituisce una rappresentazione dettagliata dei cluster
-     * in relazione al dataset di riferimento.
-     *
-     * Ogni cluster viene espanso mostrando le tuple contenute.
+     * in relazione al dataset di riferimento, includendo le tuple
+     * assegnate e le relative distanze dal centroide.
      *
      * @param data il dataset usato per dettagliare il contenuto dei cluster
      * @return una stringa con descrizione dettagliata di ciascun cluster

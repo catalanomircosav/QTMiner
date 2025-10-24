@@ -6,8 +6,9 @@ import java.util.Iterator;
 /**
  * Rappresenta un attributo discreto di un dataset.
  * <p>
- * Un attributo discreto è definito da un insieme finito di valori distinti,
- * memorizzati in ordine lessicografico.
+ * Un attributo discreto è caratterizzato da un insieme finito di valori
+ * distinti e memorizzati in ordine lessicografico. Fornisce metodi per
+ * ottenere valori e scorrere gli elementi attraverso un iteratore.
  * </p>
  *
  * @see Attribute
@@ -18,12 +19,12 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
     private final TreeSet<String> values;
 
     /**
-     * Costruisce un attributo discreto specificando nome, indice e valori possibili.
+     * Costruisce un attributo discreto specificando nome, indice e valori
+     * distinti che compongono il dominio.
      *
-     * @param name   nome dell'attributo
-     * @param index  posizione dell'attributo nello schema (>= 0)
-     * @param values insieme dei valori distinti dell'attributo
-     *
+     * @param name   il nome dell'attributo
+     * @param index  la posizione dell'attributo nello schema (maggiore o uguale a zero)
+     * @param values l'insieme dei valori distinti dell'attributo
      * @throws IllegalArgumentException se {@code values} è {@code null} o vuoto
      */
     public DiscreteAttribute(String name, int index, String[] values) {
@@ -40,18 +41,22 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
     }
 
     /**
-     * @return numero di valori distinti dell'attributo
+     * Restituisce il numero totale di valori distinti presenti nel dominio
+     * dell'attributo.
+     *
+     * @return il numero di valori distinti
      */
     public int getNumberOfDistinctValues() {
         return values.size();
     }
 
     /**
-     * Restituisce il valore in base alla posizione nell'insieme ordinato.
+     * Restituisce il valore corrispondente alla posizione indicata
+     * nell'insieme ordinato dei valori distinti.
      *
-     * @param index posizione (0-based)
-     * @return valore corrispondente
-     * @throws IndexOutOfBoundsException se l'indice non è valido
+     * @param index la posizione (0-based) del valore richiesto
+     * @return il valore corrispondente
+     * @throws IndexOutOfBoundsException se l’indice non è compreso nei limiti validi
      */
     public String getValue(int index) {
         if (index < 0 || index >= values.size())
@@ -61,7 +66,9 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
     }
 
     /**
-     * @return iteratore dell'insieme di valori distinti
+     * Restituisce un iteratore sui valori distinti dell'attributo.
+     *
+     * @return l’iteratore dell’insieme dei valori distinti
      */
     @Override
     public Iterator<String> iterator() {
@@ -69,7 +76,10 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
     }
 
     /**
-     * @return rappresentazione testuale dell'attributo
+     * Restituisce una rappresentazione testuale dell’attributo, composta dal
+     * suo nome e dalla lista ordinata dei valori distinti.
+     *
+     * @return la stringa rappresentativa dell'attributo
      */
     @Override
     public String toString() {

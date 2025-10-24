@@ -6,11 +6,12 @@ import java.net.ServerSocket;
 
 /**
  * Server multi-thread che accetta più connessioni client
- * e per ciascuna avvia un thread dedicato {@link ServerOneClient}.
+ * e, per ciascuna, avvia un thread dedicato {@link ServerOneClient}.
  * <p>
  * Il server rimane in ascolto sulla porta specificata e,
- * per ogni nuova connessione, delega la comunicazione
- * ad un thread separato.
+ * per ogni nuova connessione, delega la gestione della comunicazione
+ * a un thread separato, così da permettere l’interazione
+ * concorrente con più client.
  * </p>
  */
 public class MultiServer {
@@ -21,7 +22,7 @@ public class MultiServer {
     /**
      * Costruisce un {@code MultiServer} sulla porta specificata.
      *
-     * @param port numero di porta su cui mettersi in ascolto
+     * @param port il numero di porta su cui mettersi in ascolto
      */
     public MultiServer(int port) {
         this.port = port;
@@ -29,6 +30,10 @@ public class MultiServer {
 
     /**
      * Avvia il server e rimane in ascolto di nuove connessioni.
+     * <p>
+     * Per ogni client che si collega viene istanziato e avviato
+     * un nuovo thread {@link ServerOneClient}.
+     * </p>
      */
     public void start() {
 
@@ -54,9 +59,13 @@ public class MultiServer {
     }
 
     /**
-     * Avvia il server passando la porta come argomento da linea di comando.
-     * 
-     * @params args <port>
+     * Metodo di avvio del server via riga di comando.
+     * <p>
+     * Se fornito un parametro, viene interpretato come porta;
+     * in caso contrario viene usata la porta di default 8080.
+     * </p>
+     *
+     * @param args porta su cui avviare il server
      */
     public static void main(String[] args) {
 

@@ -4,10 +4,11 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Classe di utilità per la lettura da tastiera (standard input).
+ * Classe di utilità per la lettura da tastiera tramite lo standard input.
  * <p>
- * Fornisce metodi statici per leggere parole, stringhe, numeri, caratteri e booleani,
- * gestendo gli errori in modo centralizzato attraverso il contatore {@code errorCount}.
+ * Fornisce metodi statici per leggere parole, stringhe, numeri, caratteri e
+ * valori booleani. In caso di errori di parsing o formattazione, il problema
+ * viene gestito centralmente incrementando il contatore {@code errorCount}.
  * </p>
  */
 public class Keyboard {
@@ -28,41 +29,72 @@ public class Keyboard {
     private static final BufferedReader in =
             new BufferedReader(new InputStreamReader(System.in));
 
-    /** Costruttore privato: classe utility, non istanziabile. */
+    /**
+     * Costruttore privato per impedire l'istanza della classe di utilità.
+     */
     private Keyboard() { }
 
-    /** @return numero di errori finora riscontrati */
+    /**
+     * Restituisce il numero totale di errori riscontrati nelle letture effettuate.
+     *
+     * @return il numero di errori riscontrati
+     */
     public static int getErrorCount() {
         return errorCount;
     }
 
-    /** Reimposta il contatore degli errori a 0. */
+    /**
+     * Reimposta il contatore degli errori a zero.
+     *
+     * @param ignored parametro ignorato, presente per compatibilità
+     */
     public static void resetErrorCount(int ignored) {
         errorCount = 0;
     }
 
-    /** @return {@code true} se la stampa errori è attiva */
+    /**
+     * Verifica se la stampa degli errori è attualmente abilitata.
+     *
+     * @return {@code true} se la stampa degli errori è attiva; {@code false} altrimenti
+     */
     public static boolean getPrintErrors() {
         return printErrors;
     }
 
-    /** Abilita o disabilita la stampa errori. */
+    /**
+     * Abilita o disabilita la stampa degli errori su {@code System.err}.
+     *
+     * @param flag {@code true} per abilitare la stampa; {@code false} per disabilitarla
+     */
     public static void setPrintErrors(boolean flag) {
         printErrors = flag;
     }
 
-    /** Stampa un errore e incrementa il contatore se consentito. */
+    /**
+     * Stampa un messaggio di errore e incrementa il contatore degli errori se la stampa è abilitata.
+     *
+     * @param msg il messaggio di errore da visualizzare
+     */
     private static void error(String msg) {
         errorCount++;
         if (printErrors) System.err.println(msg);
     }
 
-    /** Restituisce il prossimo token. */
+    /**
+     * Restituisce il prossimo token disponibile dalla sorgente di input.
+     *
+     * @return il prossimo token disponibile
+     */
     private static String getNextToken() {
         return getNextToken(true);
     }
 
-    /** Restituisce il prossimo token (eventualmente saltando delimitatori). */
+    /**
+     * Restituisce il prossimo token, eventualmente saltando i delimitatori.
+     *
+     * @param skip {@code true} per saltare delimitatori e spazi; {@code false} per leggerli
+     * @return il token letto oppure {@code null} in caso di errore
+     */
     private static String getNextToken(boolean skip) {
         if (current_token == null)
             return getNextInputToken(skip);
@@ -71,7 +103,12 @@ public class Keyboard {
         return token;
     }
 
-    /** Legge un token dalla sorgente di input. */
+    /**
+     * Legge un token dalla sorgente di input, eventualmente saltando i delimitatori.
+     *
+     * @param skip {@code true} per ignorare i delimitatori; {@code false} per considerarli
+     * @return il token letto oppure {@code null} in caso di errore
+     */
     private static String getNextInputToken(boolean skip) {
         final String delimiters = " \t\n\r\f";
         String token = null;
@@ -92,14 +129,20 @@ public class Keyboard {
         return token;
     }
 
-    /** @return true se non ci sono più token nella riga corrente */
+    /**
+     * Verifica se non sono presenti ulteriori token nella riga corrente.
+     *
+     * @return {@code true} se non vi sono altri token disponibili; {@code false} altrimenti
+     */
     public static boolean endOfLine() {
         return reader == null || !reader.hasMoreTokens();
     }
 
-    // ------------------- METODI DI LETTURA PUBBLICI -------------------
-
-    /** Legge una stringa completa. */
+    /**
+     * Legge una stringa completa fino al termine della riga.
+     *
+     * @return la stringa letta, oppure {@code null} in caso di errore
+     */
     public static String readString() {
         try {
             String str = getNextToken(false);
@@ -112,7 +155,11 @@ public class Keyboard {
         }
     }
 
-    /** Legge una singola parola. */
+    /**
+     * Legge una singola parola dalla linea di input.
+     *
+     * @return la parola letta, oppure {@code null} in caso di errore
+     */
     public static String readWord() {
         try {
             return getNextToken();
@@ -122,7 +169,12 @@ public class Keyboard {
         }
     }
 
-    /** Legge un booleano (accetta \"true\"/\"false\", case-insensitive). */
+    /**
+     * Legge un valore booleano dalla tastiera. Sono accettati i valori
+     * {@code "true"} e {@code "false"} (maiuscolo o minuscolo).
+     *
+     * @return il valore booleano letto, oppure {@code false} in caso di errore
+     */
     public static boolean readBoolean() {
         String token = getNextToken();
         try {
@@ -137,7 +189,11 @@ public class Keyboard {
         return false;
     }
 
-    /** Legge un carattere. */
+    /**
+     * Legge un carattere dalla tastiera.
+     *
+     * @return il carattere letto, oppure {@code Character.MIN_VALUE} in caso di errore
+     */
     public static char readChar() {
         String token = getNextToken(false);
         try {
@@ -150,7 +206,11 @@ public class Keyboard {
         }
     }
 
-    /** Legge un intero. */
+    /**
+     * Legge un valore intero dalla tastiera.
+     *
+     * @return l'intero letto, oppure {@code Integer.MIN_VALUE} in caso di errore
+     */
     public static int readInt() {
         try {
             return Integer.parseInt(getNextToken());
@@ -160,7 +220,11 @@ public class Keyboard {
         }
     }
 
-    /** Legge un long. */
+    /**
+     * Legge un valore long dalla tastiera.
+     *
+     * @return il valore long letto, oppure {@code Long.MIN_VALUE} in caso di errore
+     */
     public static long readLong() {
         try {
             return Long.parseLong(getNextToken());
@@ -170,7 +234,11 @@ public class Keyboard {
         }
     }
 
-    /** Legge un float. */
+    /**
+     * Legge un valore float dalla sorgente di input.
+     *
+     * @return il valore float letto, oppure {@code Float.NaN} in caso di errore
+     */
     public static float readFloat() {
         try {
             return Float.parseFloat(getNextToken());
@@ -180,7 +248,11 @@ public class Keyboard {
         }
     }
 
-    /** Legge un double. */
+    /**
+     * Legge un valore double dalla sorgente di input.
+     *
+     * @return il valore double letto, oppure {@code Double.NaN} in caso di errore
+     */
     public static double readDouble() {
         try {
             return Double.parseDouble(getNextToken());

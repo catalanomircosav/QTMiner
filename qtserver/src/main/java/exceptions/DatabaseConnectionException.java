@@ -21,7 +21,7 @@ public class DatabaseConnectionException extends Exception {
     }
 
     /**
-     * Costruisce l'eccezione con un messaggio personalizzato.
+     * Costruisce l'eccezione specificando un messaggio personalizzato.
      *
      * @param message il messaggio descrittivo dell'errore
      */

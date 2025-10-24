@@ -3,7 +3,6 @@ package server;
 import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,19 +11,24 @@ import mining.QTMiner;
 import data.Data;
 
 /**
- * Gestisce una singola connessione client in un thread dedicato.
+ * Gestisce una singola connessione con un client tramite socket TCP.
  * <p>
- * Protocollo di risposte:
+ * Ogni istanza di questa classe viene eseguita in un thread separato,
+ * permettendo al server di servire più client contemporaneamente.
+ * </p>
+ *
+ * <h2>Protocollo di risposta</h2>
  * <ul>
- *   <li>Successo: invia <b>"OK"</b> seguito da eventuali altri oggetti richiesti.</li>
- *   <li>Errore: invia una sola stringa nel formato <b>"ERROR: &lt;messaggio&gt;"</b>.</li>
+ *     <li><b>OK</b> → seguito dagli eventuali oggetti aggiuntivi richiesti</li>
+ *     <li><b>ERROR: messaggio</b> → in caso di errore applicativo o operativo</li>
  * </ul>
- * Comandi supportati (come da client):
+ *
+ * <h2>Comandi supportati</h2> 
  * <ol>
- *   <li><b>0</b> — Carica tabella dal database (in: {@code String tableName}) → out: "OK", {@code data.toString()}</li>
- *   <li><b>1</b> — Computa cluster da DB (in: {@code Double radius}) → out: "OK", {@code Integer numClusters}, {@code clusterSet.toString(data)}</li>
- *   <li><b>2</b> — Salva cluster su file → out: "OK"</li>
- *   <li><b>3</b> — Carica cluster da file (in: {@code String name}, {@code Double radius}) → out: "OK", {@code clusterSet.toString(data)}</li>
+ *     <li><b>0</b> → Carica tabella dal DB <i>(in: String tableName)</i></li>
+ *     <li><b>1</b> → Computa cluster dal DB <i>(in: Double radius)</i></li>
+ *     <li><b>2</b> → Salva su file il cluster generato</li>
+ *     <li><b>3</b> → Carica cluster da file <i>(in: String name, Double radius)</i></li>
  * </ol>
  */
 public class ServerOneClient extends Thread {
@@ -33,18 +37,34 @@ public class ServerOneClient extends Thread {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    private Data data;             
-    private QTMiner kmeans;        
-    private String lastTableName;  
-    private Double lastRadius;     
+    /** Dataset attualmente caricato (comando 0 o 3). */
+    private Data data;
 
-    public ServerOneClient(Socket s) throws IOException {
-        this.socket = s;
+    /** Oggetto QTMiner utilizzato per il clustering. */
+    private QTMiner kmeans;
+
+    /** Ultimo nome tabella usato (necessario per il salvataggio su file). */
+    private String lastTableName;
+
+    /** Ultimo raggio usato (necessario per il salvataggio su file). */
+    private Double lastRadius;
+
+    /**
+     * Costruisce un nuovo gestore per la connessione con un singolo client.
+     *
+     * @param socket la socket associata al client già accettato da {@link MultiServer}
+     * @throws IOException se fallisce la creazione degli stream di input/output
+     */
+    public ServerOneClient(Socket socket) throws IOException {
+        this.socket = socket;
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in  = new ObjectInputStream(socket.getInputStream());
-        log("Thread creato per " + s.getInetAddress());
+        log("Thread creato per " + socket.getInetAddress());
     }
 
+    /**
+     * Ciclo principale del thread: ascolta i comandi del client e li inoltra ai metodi dedicati.
+     */
     @Override
     public void run() {
         try {
@@ -54,33 +74,36 @@ public class ServerOneClient extends Thread {
                     sendError("Comando non valido (atteso Integer).");
                     continue;
                 }
-                int cmd = (Integer) cmdObj;
-                handleCommand(cmd);
+                handleCommand((Integer) cmdObj);
             }
         } catch (EOFException e) {
             log("Connessione chiusa dal client.");
-        } catch (IOException e) {
-            logErr("I/O: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            logErr("Classe non trovata: " + e.getMessage());
+        } catch (IOException | ClassNotFoundException e) {
+            logErr("Errore I/O: " + e.getMessage());
         } finally {
             closeResources();
         }
     }
 
-    // ======================= Gestione comandi =======================
-
+    /**
+     * Dispatch del comando ricevuto dal client.
+     *
+     * @param cmd il codice del comando inviato dal client
+     */
     private void handleCommand(int cmd) {
         switch (cmd) {
-            case 0: handleLoadFromDb();       break;
-            case 1: handleComputeFromDb();    break;
-            case 2: handleSaveToFile();       break;
-            case 3: handleComputeFromFile();  break;
+            case 0: handleLoadFromDb();      break;
+            case 1: handleComputeFromDb();   break;
+            case 2: handleSaveToFile();      break;
+            case 3: handleComputeFromFile(); break;
             default:
                 sendError("Comando non riconosciuto: " + cmd);
         }
     }
 
+    /**
+     * Comando 0 — Carica una tabella dal database e invia al client la sua rappresentazione testuale.
+     */
     private void handleLoadFromDb() {
         log("Caricamento tabella dal database...");
         try {
@@ -89,18 +112,20 @@ public class ServerOneClient extends Thread {
                 sendError("Nome tabella non valido.");
                 return;
             }
-            String tname = (String) tnameObj;
-            this.lastTableName = tname;
 
-            this.data = new Data(tname);
+            lastTableName = (String) tnameObj;
+            data = new Data(lastTableName);
+
             sendOK(data.toString());
-            log("Tabella caricata: " + tname + " -> OK");
+            log("Tabella caricata: " + lastTableName);
         } catch (Exception e) {
             sendError("Impossibile caricare la tabella: " + e.getMessage());
-            logErr("LoadFromDb fallito: " + e.getMessage());
         }
     }
 
+    /**
+     * Comando 1 — Esegue clustering QT direttamente dal database.
+     */
     private void handleComputeFromDb() {
         log("Computazione cluster da DB...");
         try {
@@ -109,30 +134,30 @@ public class ServerOneClient extends Thread {
                 sendError("Raggio non valido.");
                 return;
             }
-            double radius = (Double) rObj;
-            this.lastRadius = radius;
 
-            if (this.data == null) {
+            lastRadius = (Double) rObj;
+            if (data == null) {
                 sendError("Dataset non caricato. Esegui prima l'opzione 0.");
                 return;
             }
 
-            this.kmeans = new QTMiner(radius);
+            kmeans = new QTMiner(lastRadius);
             int num = kmeans.compute(data);
 
             sendOK(num, kmeans.getC().toString(data));
-            log("Compute DB r=" + radius + " -> OK (clusters=" + num + ")");
         } catch (Exception e) {
             sendError("Errore durante la computazione: " + e.getMessage());
-            logErr("ComputeFromDb fallito: " + e.getMessage());
         }
     }
 
+    /**
+     * Comando 2 — Salva il cluster corrente su file.
+     */
     private void handleSaveToFile() {
         log("Salvataggio cluster su file...");
         try {
             if (kmeans == null) {
-                sendError("Nessun risultato da salvare. Esegui prima la computazione (opzione 1 o 3).");
+                sendError("Nessun cluster da salvare.");
                 return;
             }
             if (lastTableName == null || lastRadius == null) {
@@ -142,59 +167,50 @@ public class ServerOneClient extends Thread {
 
             String filename = lastTableName + "_" + lastRadius + ".dmp";
             kmeans.salva(filename);
-
             sendOK();
-            log("Salvataggio su \"" + filename + "\" -> OK");
         } catch (Exception e) {
-            sendError("Errore in salvataggio: " + e.getMessage());
-            logErr("SaveToFile fallito: " + e.getMessage());
+            sendError("Errore durante il salvataggio: " + e.getMessage());
         }
     }
 
     /**
-     * Case 3 — CARICA cluster da file, NON ricalcola.
+     * Comando 3 — Carica cluster da file e lo restituisce al client (senza ricalcolo).
      */
     private void handleComputeFromFile() {
-        log("Computazione cluster da file...");
+        log("Caricamento cluster da file...");
         try {
             Object nameObj = in.readObject();
-            Object rObj    = in.readObject();
-
+            Object rObj = in.readObject();
             if (!(nameObj instanceof String) || !(rObj instanceof Double)) {
                 sendError("Parametri non validi.");
                 return;
             }
 
-            String name = (String) nameObj;
-            double radius = (Double) rObj;
+            lastTableName = (String) nameObj;
+            lastRadius = (Double) rObj;
+            String filename = lastTableName + "_" + lastRadius + ".dmp";
 
-            this.lastTableName = name;
-            this.lastRadius = radius;
-
-            String filename = name + "_" + radius + ".dmp";
-
-            this.data = new Data(name);
-            this.kmeans = new QTMiner(filename);
+            data = new Data(lastTableName);
+            kmeans = new QTMiner(filename);
 
             sendOK(kmeans.getC().toString(data));
-            log("Compute from file \"" + filename + "\" -> OK");
         } catch (FileNotFoundException e) {
-            sendError("File non trovato: " + e.getMessage());
-            logErr("File non trovato: " + e.getMessage());
+            sendError("File non trovato.");
         } catch (Exception e) {
-            sendError("Errore nella computazione da file: " + e.getMessage());
-            logErr("ComputeFromFile fallito: " + e.getMessage());
+            sendError("Errore durante il caricamento: " + e.getMessage());
         }
     }
 
-    // ======================= Utilità I/O =======================
-
+    /**
+     * Invia al client un messaggio di successo con eventuali payload aggiuntivi.
+     *
+     * @param payload gli oggetti da inviare dopo il messaggio "OK"
+     */
     private void sendOK(Object... payload) {
         try {
             out.writeObject("OK");
-            if (payload != null) {
-                for (Object o : payload)
-                    out.writeObject(o);
+            for (Object o : payload) {
+                out.writeObject(o);
             }
             out.flush();
         } catch (IOException e) {
@@ -202,23 +218,41 @@ public class ServerOneClient extends Thread {
         }
     }
 
+    /**
+     * Invia al client un messaggio di errore formattato.
+     *
+     * @param message il messaggio di errore
+     */
     private void sendError(String message) {
         try {
-            out.writeObject("ERROR: " + (message == null ? "" : message));
+            out.writeObject("ERROR: " + message);
             out.flush();
         } catch (IOException e) {
             logErr("Invio ERROR fallito: " + e.getMessage());
         }
     }
 
+    /**
+     * Stampa un log informativo lato server.
+     *
+     * @param msg il messaggio da mostrare su stdout
+     */
     private void log(String msg) {
         System.out.println("[SERVER] " + msg);
     }
 
+    /**
+     * Stampa un log di errore lato server.
+     *
+     * @param msg il messaggio da mostrare su stderr
+     */
     private void logErr(String msg) {
         System.err.println("[SERVER] " + msg);
     }
 
+    /**
+     * Chiude socket e stream associati a questa connessione client.
+     */
     private void closeResources() {
         try { if (in != null)  in.close(); }  catch (IOException ignored) {}
         try { if (out != null) out.close(); } catch (IOException ignored) {}

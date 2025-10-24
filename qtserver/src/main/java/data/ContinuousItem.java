@@ -3,8 +3,8 @@ package data;
 /**
  * Rappresenta un item associato a un {@link ContinuousAttribute}.
  * <p>
- * La distanza tra due valori continui è definita come
- * la differenza assoluta tra i rispettivi valori <b>scalati in [0,1]</b>.
+ * La distanza tra due valori continui è calcolata come la differenza assoluta
+ * tra i rispettivi valori normalizzati nell’intervallo {@code [0,1]}.
  * </p>
  *
  * @see Item
@@ -13,10 +13,10 @@ package data;
 public class ContinuousItem extends Item {
 
     /**
-     * Costruisce un {@code ContinuousItem} con l'attributo e il valore specificati.
+     * Costruisce un {@code ContinuousItem} specificando attributo continuo e valore associato.
      *
-     * @param attribute attributo continuo associato all'item
-     * @param value valore numerico dell'item
+     * @param attribute l’attributo continuo associato all’item
+     * @param value     il valore numerico dell’item
      */
     public ContinuousItem(Attribute attribute, double value) {
         super(attribute, value);
@@ -25,13 +25,13 @@ public class ContinuousItem extends Item {
     /**
      * Calcola la distanza tra il valore di questo item e un altro valore continuo.
      * <p>
-     * Formula: {@code | scaled(this.value) - scaled(other) |}
+     * La distanza è definita dalla formula:<br>
+     * {@code |scaled(this.value) - scaled(other)|}
      * </p>
      *
-     * @param other valore continuo con cui calcolare la distanza
-     * @return distanza normalizzata (compresa tra 0 e 1)
-     *
-     * @throws IllegalArgumentException se il valore è {@code null} o non è un {@link Double}
+     * @param other il valore continuo con cui calcolare la distanza; deve essere un {@link Double}
+     * @return la distanza normalizzata, compresa tra {@code 0} e {@code 1}
+     * @throws IllegalArgumentException se {@code other} è {@code null} o non è un {@link Double}
      */
     @Override
     public double distance(Object other) {
@@ -47,7 +47,7 @@ public class ContinuousItem extends Item {
 
         ContinuousAttribute attribute = (ContinuousAttribute) getAttribute();
         double scaledOther = attribute.getScaledValue((Double) other);
-        double scaledThis  = attribute.getScaledValue(thisValue);
+        double scaledThis = attribute.getScaledValue(thisValue);
 
         return Math.abs(scaledOther - scaledThis);
     }

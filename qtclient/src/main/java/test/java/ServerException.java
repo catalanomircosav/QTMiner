@@ -12,14 +12,14 @@ public class ServerException extends Exception {
     /**
      * Costruisce una {@code ServerException} con il messaggio specificato.
      *
-     * @param message messaggio descrittivo dell'errore generato dal server
+     * @param message il messaggio descrittivo dell'errore generato dal server
      */
     public ServerException(String message) {
         super(message);
     }
 
     /**
-     * Costruisce una {@code ServerException} senza messaggio.
+     * Costruisce una {@code ServerException} senza un messaggio descrittivo.
      */
     public ServerException() {
         super();

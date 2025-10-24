@@ -2,9 +2,9 @@ package database;
 
 /**
  * Enumerazione che rappresenta le operazioni di aggregazione applicabili
- * su una colonna del database (valore minimo o massimo).
+ * a una colonna del database (valore minimo o massimo).
  * <p>
- * Viene utilizzata, ad esempio, nel metodo
+ * È utilizzata, ad esempio, nel metodo
  * {@link database.TableData#getAggregateColumnValue(String, database.TableSchema.Column, QUERY_TYPE)}.
  * </p>
  *

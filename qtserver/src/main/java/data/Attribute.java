@@ -5,8 +5,10 @@ import java.io.Serializable;
 /**
  * Classe astratta che rappresenta un attributo generico di un dataset.
  * <p>
- * Ogni attributo ha un nome e una posizione (indice) nello schema del dataset.
- * Le sottoclassi dovranno definire il tipo di attributo (es. discreto o continuo).
+ * Ogni attributo è caratterizzato da un nome e da una posizione (indice)
+ * all'interno dello schema del dataset. Le sottoclassi concrete definiscono la
+ * specifica tipologia di attributo, come {@link DiscreteAttribute} o
+ * {@link ContinuousAttribute}.
  * </p>
  *
  * @see DiscreteAttribute
@@ -17,15 +19,14 @@ public abstract class Attribute implements Serializable {
     /** Nome dell'attributo (non nullo e non vuoto). */
     private final String name;
 
-    /** Indice dell'attributo nello schema del dataset (>= 0). */
+    /** Indice dell'attributo nello schema del dataset (maggiore o uguale a zero). */
     private final int index;
 
     /**
-     * Costruisce un attributo con nome e indice specificati.
+     * Costruisce un attributo con il nome e l'indice specificati.
      *
-     * @param name  nome dell'attributo; non può essere {@code null} o vuoto
-     * @param index posizione dell'attributo; deve essere >= 0
-     *
+     * @param name  il nome dell'attributo; non può essere {@code null} o vuoto
+     * @param index la posizione dell'attributo nello schema; deve essere maggiore o uguale a zero
      * @throws IllegalArgumentException se {@code name} è {@code null} o vuoto
      * @throws IllegalArgumentException se {@code index} è negativo
      */
@@ -40,21 +41,30 @@ public abstract class Attribute implements Serializable {
     }
 
     /**
-     * @return nome dell'attributo
+     * Restituisce il nome dell'attributo.
+     *
+     * @return il nome dell'attributo
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return indice dell'attributo nello schema
+     * Restituisce la posizione dell'attributo all'interno dello schema del dataset.
+     *
+     * @return l'indice dell'attributo
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * @return rappresentazione testuale dell'attributo (il suo nome)
+     * Restituisce una rappresentazione testuale dell'attributo.
+     * <p>
+     * In questo caso viene restituito semplicemente il nome.
+     * </p>
+     *
+     * @return il nome dell'attributo
      */
     @Override
     public String toString() {
