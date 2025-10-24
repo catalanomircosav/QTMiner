@@ -11,7 +11,7 @@ Il sistema permette di:
 
 ---
 
-## 🏗 Architettura del progetto
+## Architettura del progetto
 
 Il sistema è suddiviso in due moduli **Maven**:
 ```
@@ -35,7 +35,7 @@ SERVER ----> MySQL DB
 
 ---
 
-## ✅ Funzionalità principali
+## Funzionalità principali
 
 | Operazione | Lato | Descrizione |
 |------------|-------|-------------|
@@ -50,7 +50,7 @@ Il **server** gestisce più client tramite thread, esegue i comandi e accede a D
 
 ---
 
-## 🔌 Protocollo di comunicazione
+## Protocollo di comunicazione
 
 Il client invia un codice numerico al server. Ogni comando produce una risposta `OK` + dati, oppure `ERROR: messaggio`.
 
@@ -65,7 +65,7 @@ Formato errore: ```ERROR: messaggio```
 
 ---
 
-## 🧠 Algoritmo Quality-Threshold (QT)
+## Algoritmo Quality-Threshold (QT)
 
 L’algoritmo forma cluster scegliendo iterativamente il cluster **più popoloso entro un raggio R**, basandosi sulla distanza tra tuple.
 
@@ -78,7 +78,7 @@ Supporta:
 
 ---
 
-## ⚙️ Requisiti
+## Requisiti
 
 | Componente | Versione consigliata |
 |------------|---------------------|
@@ -88,15 +88,35 @@ Supporta:
 
 ---
 
-## 🚀 Esecuzione
+## Build e Generazione `Javadoc`
+Sono presenti script per automatizzare la fase di build e documentazione, nella posizione: `QTMiner/scripts/`.
 
-### 1. Avvia il server
+### Build completa di client e server
+| Sistema | Script |
+|---------|---------|
+| Windows | `scripts/build/buildsln.bat` |
+| Linux/Mac | `scripts/build/buildsln.sh` |
+
+### Generazione Javadoc
+| Sistema | Script |
+|---------|---------|
+| Windows | `scripts/docs/gendocs.bat` |
+| Linux/Mac | `scripts/docs/gendocs.sh` |
+
+Il Javadoc viene generato nel path: `target/reports/index.html`
+
+___
+
+## Build manuale (compresa di test) e avvio
+
+### 1. Server
 ```bash
 cd qtserver/
 mvn clean package
 java -jar target/qtserver-1.0.jar <port>
 ```
-### 2. Avvia il client
+
+### 2. Client
 ```bash
 cd qtclient/
 mvn clean package
@@ -107,7 +127,7 @@ java -jar target/qtclient-1.0.jar <ip> <port>
 |-|-|
 | GUI JavaFX per il client|	In sviluppo |
 |Script .sql per generare il DB automaticamente	| Pianificato |
-|Script .sh/.bat per build ed esecuzione rapida |	Pianificato | 
+|Script .sh/.bat per build ed esecuzione rapida |	Completato | 
 | Workflow CI con GitHub Actions | Pianificato |
 
 ___
