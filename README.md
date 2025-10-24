@@ -98,7 +98,6 @@ java -jar target/qtserver-1.0.jar
 ```
 2. Avvia il client
 ```bash
-Copy code
 cd qtclient/
 mvn clean package
 java -jar target/qtclient-1.0.jar
