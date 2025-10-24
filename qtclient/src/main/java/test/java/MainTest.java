@@ -103,8 +103,6 @@ public class MainTest {
         if(result.equals("OK"))
             return (String) in.readObject();
         else throw new ServerException(result);
-
-		
     }
 
     public static void main(String[] args) 
