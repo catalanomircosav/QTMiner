@@ -96,7 +96,7 @@ cd qtserver/
 mvn clean package
 java -jar target/qtserver-1.0.jar <port>
 ```
-2. Avvia il client
+### 2. Avvia il client
 ```bash
 cd qtclient/
 mvn clean package
