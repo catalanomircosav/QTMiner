@@ -1,0 +1,199 @@
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", "Open Sans", sans-serif;
+    -fx-font-size: 13px;
+    -fx-base: #1e1e1e;
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #e0e0e0;
+}
+
+/* === Sidebar === */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #252526, #1e1e1e);
+    -fx-padding: 8;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: #333;
+}
+
+.sidebar-group {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ddd;
+    -fx-border-color: #3a3a3a;
+    -fx-border-width: 0 0 1 0;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #333;
+    -fx-text-fill: #ddd;
+    -fx-font-weight: bold;
+    -fx-padding: 6 8 6 8;
+}
+
+.titled-pane > .content {
+    -fx-background-color: #252525;
+}
+
+/* === Buttons === */
+.button {
+    -fx-background-color: #007acc;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-padding: 5 12 5 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 3, 0, 0, 1);
+}
+.button:hover {
+    -fx-background-color: #1498ff;
+}
+.button:pressed {
+    -fx-background-color: #005a9e;
+}
+.button.danger {
+    -fx-background-color: #c0392b;
+}
+.button.danger:hover {
+    -fx-background-color: #e74c3c;
+}
+
+/* === Labels === */
+.label {
+    -fx-text-fill: #e0e0e0;
+}
+.section-title {
+    -fx-text-fill: #58a6ff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 6 0 2 0;
+}
+
+/* === Connessione status === */
+#statusLabel {
+    -fx-font-weight: bold;
+}
+#statusLabel.connected {
+    -fx-text-fill: #4CAF50; /* verde */
+}
+#statusLabel.disconnected {
+    -fx-text-fill: #E53935; /* rosso */
+}
+
+/* === TextField, Slider, Inputs === */
+.text-field {
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: #f0f0f0;
+    -fx-border-color: #444;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+.text-field:focused {
+    -fx-border-color: #007acc;
+    -fx-background-color: #303030;
+}
+
+.slider {
+    -fx-control-inner-background: #007acc;
+}
+.slider .thumb {
+    -fx-background-color: #1498ff;
+}
+.slider .track {
+    -fx-background-color: #444;
+}
+
+/* === TableView === */
+.table-view {
+    -fx-background-color: #1e1e1e;
+    -fx-table-cell-border-color: #2d2d2d;
+    -fx-border-color: #2d2d2d;
+    -fx-border-width: 1;
+}
+
+.table-view .column-header {
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: #cccccc;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #1e1e1e;
+}
+.table-view .table-row-cell:odd {
+    -fx-background-color: #242424;
+}
+.table-view .table-row-cell:selected {
+    -fx-background-color: #007acc;
+    -fx-text-fill: white;
+}
+
+/* 🔹 Forza il colore del testo nelle celle */
+.table-cell {
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 13px;
+}
+
+/* === Charts === */
+.chart-plot-background {
+    -fx-background-color: #1a1a1a;
+}
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #333;
+}
+.axis {
+    -fx-tick-label-fill: #bbb;
+}
+.axis-label {
+    -fx-text-fill: #aaa;
+}
+.chart-title {
+    -fx-text-fill: #ddd;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* === Tabs === */
+.tab-pane {
+    -fx-background-color: #1e1e1e;
+}
+.tab-header-background {
+    -fx-background-color: #2a2a2a;
+}
+.tab {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ddd;
+    -fx-padding: 6 12 6 12;
+}
+.tab:selected {
+    -fx-background-color: #007acc;
+    -fx-text-fill: white;
+}
+
+/* === Scrollbars === */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #444;
+    -fx-background-radius: 3;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: #666;
+}
+
+/* === Log area === */
+.text-area {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #ddd;
+    -fx-border-color: #333;
+    -fx-border-width: 1;
+    -fx-font-family: monospace;
+}
+.text-area:focused {
+    -fx-border-color: #007acc;
+}
+
+/* === Footer === */
+.footer-label {
+    -fx-text-fill: #555;
+    -fx-font-size: 11px;
+}

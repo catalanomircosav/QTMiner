@@ -123,12 +123,13 @@ public class Cluster implements Iterable<Integer>, Comparable<Cluster>, Serializ
         StringBuilder sb = new StringBuilder("Centroid=(");
 
         for (int i = 0; i < centroid.getLength(); i++)
-            sb.append(centroid.get(i).getValue()).append(" ");
+            sb.append(centroid.get(i)).append(", ");
 
         if (centroid.getLength() > 0)
             sb.setLength(sb.length() - 1);
 
-        sb.append(") Size=").append(getSize());
+        sb.append(")");
+
         return sb.toString();
     }
 
