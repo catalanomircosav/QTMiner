@@ -122,13 +122,6 @@ cd qtclient/
 mvn clean package
 java -jar target/qtclient-1.0.jar <ip> <port>
 ```
-## Estensioni previste
-| Estensione | Stato
-|-|-|
-| GUI JavaFX per il client|	In sviluppo |
-|Script .sql per generare il DB automaticamente	| Pianificato |
-|Script .sh/.bat per build ed esecuzione rapida |	Completato | 
-| Workflow CI con GitHub Actions | Pianificato |
 
 ___
 
