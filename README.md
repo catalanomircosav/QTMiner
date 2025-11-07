@@ -125,6 +125,6 @@ java -jar target/qtclient-1.0.jar <ip> <port>
 ___
 
 ## Autori
-Sviluppo realizzato in collaborazione paritaria:
+Sviluppo realizzato in collaboraz[text](obsidian://open?vault%3Dprogetto%26file%3DCasi%20di%20Test%20%E2%80%93%20Progetto%20Base)ione paritaria:
 - Mirco Catalano
 - Lorenzo Amato

@@ -216,9 +216,15 @@ public class MainTest {
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
+            char scelta;
+            do {
+                System.out.print("Vuoi eseguire un'altra operazione? (s/n): ");
+                scelta = Keyboard.readChar();
 
-            System.out.print("Vuoi eseguire un'altra operazione? (s/n): ");
-            if (Keyboard.readChar() != 's') break;
+            } while(scelta != 'n' && scelta != 's');
+            
+            if(scelta == 'n') break;
+
         } while (true);
 
         try {
