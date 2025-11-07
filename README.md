@@ -43,7 +43,6 @@ SERVER ----> MySQL DB
 | Clustering QT | Server | Generazione cluster su dataset caricato |
 | Salvataggio su file | Server | Serializzazione in `.dmp` |
 | Ricarica da file | Client → Server | Clustering o visualizzazione senza DB |
-| Logging & error handling | Entrambi | Risposte `OK` / `ERROR: <msg>` |
 
 Il **client** offre un menu testuale e invia comandi al server (`0-3`).  
 Il **server** gestisce più client tramite thread, esegue i comandi e accede a DB e algoritmo QT.
@@ -88,8 +87,14 @@ Supporta:
 
 ---
 
-## Build e Generazione `Javadoc`
+## Script di automazione
 Sono presenti script per automatizzare la fase di build e documentazione, nella posizione: `QTMiner/scripts/`.
+
+### Creazione del database di esempio
+| Sistema | Script |
+|---------|---------|
+| Windows | `scripts/build/createdb.bat` |
+| Linux/Mac | `scripts/build/createdb.sh` |
 
 ### Build completa di client e server
 | Sistema | Script |
@@ -122,13 +127,6 @@ cd qtclient/
 mvn clean package
 java -jar target/qtclient-1.0.jar <ip> <port>
 ```
-## Estensioni previste
-| Estensione | Stato
-|-|-|
-| GUI JavaFX per il client|	In sviluppo |
-|Script .sql per generare il DB automaticamente	| Pianificato |
-|Script .sh/.bat per build ed esecuzione rapida |	Completato | 
-| Workflow CI con GitHub Actions | Pianificato |
 
 ___
 
