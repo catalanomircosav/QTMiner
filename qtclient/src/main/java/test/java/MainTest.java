@@ -214,7 +214,7 @@ public class MainTest {
                         break;
                 }
             } catch (Exception e) {
-                System.err.println("Errore: " + e.getMessage());
+                System.err.println(e.getMessage());
             }
 
             System.out.print("Vuoi eseguire un'altra operazione? (s/n): ");

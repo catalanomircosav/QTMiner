@@ -87,14 +87,8 @@ Supporta:
 
 ---
 
-## Script di automazione
+## Build e Generazione `Javadoc`
 Sono presenti script per automatizzare la fase di build e documentazione, nella posizione: `QTMiner/scripts/`.
-
-### Creazione del database di esempio
-| Sistema | Script |
-|---------|---------|
-| Windows | `scripts/build/createdb.bat` |
-| Linux/Mac | `scripts/build/createdb.sh` |
 
 ### Build completa di client e server
 | Sistema | Script |
