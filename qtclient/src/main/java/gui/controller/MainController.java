@@ -1,6 +1,7 @@
 package gui.controller;
 
 import gui.net.QTProtocolClient;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -12,12 +13,25 @@ import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.NumberStringConverter;
+import javafx.util.Duration;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Controller principale che gestisce la GUI del progetto.
+ * 
+ * @version 2.0
+ * @author Mirco Catalano
+ * @author Lorenzo Amato 
+ */
 public class MainController {
+
+    /**
+     * Costruisce il controller per la gestione della GUI.
+     */
+    public MainController() { }
 
     // ===== Connessione =====
     @FXML private TextField hostField;
@@ -55,6 +69,8 @@ public class MainController {
     @FXML private ChoiceBox<String> xAxisChoice;
     @FXML private ChoiceBox<String> yAxisChoice;
 
+    @FXML private Label statusFileLabel;
+
     // ===== Log =====
     @FXML private TextArea logArea;
 
@@ -67,6 +83,9 @@ public class MainController {
     private final Map<ExampleRow, XYChart.Data<Number, Number>> row2Point = new HashMap<>();
     private final Map<XYChart.Data<Number, Number>, ExampleRow> point2Row = new HashMap<>();
 
+    /**
+     * Metodo che inizializza a valori di default le strutture iterative della GUI.
+     */
     @FXML
     public void initialize() {
         hostField.setText("127.0.0.1");
@@ -103,6 +122,9 @@ public class MainController {
     }
 
     // === CONNESSIONE ===
+    /**
+     * Metodo che comunica con il server e permette la connessione al server.
+     */
     @FXML private void onConnect() {
         try {
             client.connect(hostField.getText().trim(), Integer.parseInt(portField.getText().trim()));
@@ -111,17 +133,26 @@ public class MainController {
         updateStatus();
     }
 
+    /**
+     * Metodo che comunica con il server e permette la disconnessione dal server.
+     */
     @FXML private void onDisconnect() {
         try { client.disconnect(); append("Disconnesso."); }
         catch (Exception e) { alert("Errore disconnessione", e.getMessage()); }
         updateStatus();
     }
 
+    /**
+     * Metodo che permette di pulire la console del log
+     */
     @FXML private void onClearLog() {
         logArea.clear();
     }
 
     // === CARICAMENTO TABELLA ===
+    /**
+     * Metodo che permette di  visualizzare la tabella del dataset nella GUI.
+     */
     @FXML private void onLoadTable() {
         if (!ensureConnected()) return;
         try {
@@ -180,11 +211,29 @@ public class MainController {
         } catch (Exception e) { alert("Errore clustering file", e.getMessage()); }
     }
 
-    @FXML private void onSaveClusters() {
+    @FXML
+    private void onSaveClusters() {
         if (!ensureConnected()) return;
-        try { append(client.saveClustersToFile()); }
-        catch (Exception e) { alert("Errore salvataggio", e.getMessage()); }
+        try {
+            String resp = client.saveClustersToFile();
+            append(resp);
+            showStatus("Clustering salvato correttamente!", "green");
+        } catch (Exception e) {
+            alert("Errore salvataggio", e.getMessage());
+            showStatus("Errore durante il salvataggio: " + e.getMessage(), "red");
+        }
     }
+
+    private void showStatus(String message, String color) {
+        statusFileLabel.setText(message);
+        statusFileLabel.setStyle("-fx-text-fill: " + color + ";");
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(e -> statusFileLabel.setText(""));
+        pause.play();
+    }
+
+
 
     // === VISUALIZZAZIONE ===
     private static class ChartsData {
@@ -474,35 +523,148 @@ public class MainController {
     }
 
     // === CLASSI DI SUPPORTO ===
+
+    /**
+     * Rappresenta una riga generica di dati da visualizzare in una tabella JavaFX.
+     * <p>
+     * È una classe di supporto utilizzata per gestire in modo dinamico i valori
+     * associati alle colonne di una tabella, rendendoli compatibili con il modello
+     * osservabile di JavaFX.
+     */
     public static class DataRow {
+        /** Array contenente i valori della riga. */
         private final String[] values;
+
+        /**
+         * Costruisce una riga dati a partire da un insieme di valori testuali.
+         *
+         * @param v array di stringhe che rappresenta i valori delle colonne
+         */
         public DataRow(String[] v) { values = v; }
+
+        /**
+         * Restituisce un valore osservabile associato all'indice specificato.
+         * <p>
+         * Se l'indice non è valido, viene restituita una stringa vuota come valore
+         * predefinito.
+         *
+         * @param i indice del valore da restituire
+         * @return un {@link ObservableValue} contenente il valore richiesto
+         */
         public ObservableValue<String> getValueAt(int i) {
             String val = (i >= 0 && i < values.length) ? values[i] : "";
             return new SimpleStringProperty(val);
         }
     }
 
+    /**
+     * Modello di riga per la tabella che visualizza le informazioni sui cluster
+     * generati dall'algoritmo di Quality Threshold (QT).
+     * <p>
+     * Ogni riga rappresenta un singolo cluster, mostrando il suo nome,
+     * il centroide, la dimensione e la distanza media dei punti rispetto al centro.
+     */
     public static class ClusterRow {
-        private final String name, centroid;
-        private final Number size, avgDistance;
+        /** Nome identificativo del cluster. */
+        private final String name;
+
+        /** Rappresentazione testuale del centroide del cluster. */
+        private final String centroid;
+
+        /** Numero di elementi contenuti nel cluster. */
+        private final Number size;
+
+        /** Distanza media dei punti del cluster dal centroide. */
+        private final Number avgDistance;
+
+        /**
+         * Costruisce una riga di tabella che rappresenta un cluster.
+         *
+         * @param n nome del cluster
+         * @param c rappresentazione del centroide
+         * @param s dimensione del cluster
+         * @param avg distanza media dal centroide
+         */
         public ClusterRow(String n, String c, Number s, Number avg) {
-            name = n; centroid = c; size = s; avgDistance = avg;
+            name = n;
+            centroid = c;
+            size = s;
+            avgDistance = avg;
         }
+
+        /** 
+         * Restituisce il nome del cluster.
+         * 
+         * @return nome del cluster */
         public String getName() { return name; }
+
+        /** 
+         * Restituisce il centroide del cluster.
+         * 
+         * @return centroide del cluster */
         public String getCentroid() { return centroid; }
+
+        /** 
+         * Restituisce il numero di elementi nel cluster.
+         * 
+         * @return numero di elementi nel cluster */
         public Number getSize() { return size; }
+
+        /**
+         * Restituisce la distanza media dei punti dal centroide
+         * 
+         * @return distanza media dei punti dal centroide */
         public Number getAvgDistance() { return avgDistance; }
     }
 
+    /**
+     * Modello di riga per la tabella che visualizza i singoli esempi
+     * (o punti) appartenenti a un determinato cluster.
+     * <p>
+     * È utilizzata per rappresentare i risultati dell’analisi di clustering,
+     * consentendo di mostrare l’appartenenza di ciascun esempio e la sua distanza
+     * dal centro del cluster.
+     */
     public static class ExampleRow {
-        private final String cluster, example;
+        /** Nome del cluster a cui appartiene l'esempio. */
+        private final String cluster;
+
+        /** Rappresentazione testuale dell'esempio. */
+        private final String example;
+
+        /** Distanza dell'esempio dal centroide del cluster. */
         private final Number distance;
+
+        /**
+         * Costruisce una riga contenente le informazioni su un esempio.
+         *
+         * @param c nome del cluster di appartenenza
+         * @param e rappresentazione testuale dell’esempio
+         * @param d distanza dell’esempio dal centroide
+         */
         public ExampleRow(String c, String e, Number d) {
-            cluster = c; example = e; distance = d;
+            cluster = c;
+            example = e;
+            distance = d;
         }
+
+        /** 
+         * Restituisce il nome del cluster di appartenenza.
+         * 
+         * @return nome del cluster di appartenenza */
         public String getCluster() { return cluster; }
+
+        /** 
+         * Restituisce la rappresentazione testuale dell'esempio
+         * 
+         * @return rappresentazione testuale dell’esempio */
         public String getExample() { return example; }
+
+        /** 
+         * Restituisce la distanza dal centroide del cluster.
+         * 
+         * @return distanza dal centroide del cluster */
         public Number getDistance() { return distance; }
     }
+
 }

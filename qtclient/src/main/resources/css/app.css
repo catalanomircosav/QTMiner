@@ -197,3 +197,9 @@
     -fx-text-fill: #555;
     -fx-font-size: 11px;
 }
+
+/* === Pulsanti sezione Database === */
+.titled-pane[text="Database"] .button {
+    -fx-min-width: 90px;   /* aumenta o diminuisci se serve */
+    -fx-pref-width: 100px;
+}

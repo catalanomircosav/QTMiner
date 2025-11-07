@@ -137,7 +137,7 @@ public class ServerOneClient extends Thread {
 
             lastRadius = (Double) rObj;
             if (data == null) {
-                sendError("Dataset non caricato. Esegui prima l'opzione 0.");
+                sendError("Dataset non caricato.");
                 return;
             }
 
