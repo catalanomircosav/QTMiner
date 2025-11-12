@@ -7,7 +7,7 @@
 
 MYSQL_USER="root"
 MYSQL_PWD=""
-SQL_FILE="createdb.sql"
+SQL_FILE="database.sql"
 
 echo "Creazione database MapDB..."
 mysql -u "$MYSQL_USER" -p"$MYSQL_PWD" < "$SQL_FILE"
