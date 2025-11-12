@@ -220,8 +220,7 @@ public class MainTest {
             do {
                 System.out.print("Vuoi eseguire un'altra operazione? (s/n): ");
                 scelta = Keyboard.readChar();
-
-            } while(scelta != 'n' || scelta != 's');
+            } while(scelta != 'n' && scelta != 's');
             
             if(scelta == 'n') break;
 
